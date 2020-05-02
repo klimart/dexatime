@@ -1,0 +1,13 @@
+{
+    "name": "dexatime",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "electron": "electron ."
+    },
+    "author": "Artem Klymov <artem@mediotype.com>",
+    "license": "MIT",
+    "dependencies": {
+        "electron": "^8.2.5"
+    }
+}
