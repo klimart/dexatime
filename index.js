@@ -4,11 +4,12 @@ const { app, BrowserWindow } = electron;
 
 let mainWindow;
 
+app.allowRendererProcessReuse = false;
 app.on('ready', () => {
     mainWindow = new BrowserWindow({
         webPreferences: {
             nodeIntegration: true,
         },
     });
-    mainWindow.loadURL(`file://${__dirname}/index.html`);
+    mainWindow.loadURL(`file://${__dirname}/src/index.html`);
 });
