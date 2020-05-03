@@ -14,15 +14,61 @@ fs.readdirSync('node_modules')
 module.exports = {
   externals: nodeModules,
   entry: [
-    './src/index.js'
+    './src/index.js', './src/scss/main.scss'
   ],
   target: 'node',
   output: {
-    path: __dirname,
-    publicPath: '/',
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+        path: path.resolve(__dirname, 'build'),
+        publicPath: '/'
   },
   module: {
+    rules: [
+      {
+          test: /\.js?$/,
+          loader: 'babel-loader',
+          exclude: '/node_modules/',
+          options: {
+              presets: [
+                  'react', 'stage-0', ['env', {
+                      target: { browsers: ['last 2 versions']}
+                  }]
+              ]
+          }
+      },
+      {
+          test: /\.(png|jpg|gif)$/,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                  name: 'assets/graphics/[name].[ext]',
+              }
+            }
+          ]
+        },
+      {
+          test: /\.scss$/,
+          use: [
+              {
+                  loader: 'file-loader',
+                  options: {
+                      name: '[name].min.css',
+                      outputPath: 'assets/css/'
+                  }
+              },
+              {
+                  loader: 'extract-loader'
+              },
+              {
+                  loader: 'css-loader'
+              },
+              {
+                  loader: 'sass-loader'
+              }
+           ]
+        }
+    ],
     loaders: [
       {
         exclude: /node_modules/,
