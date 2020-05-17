@@ -2,11 +2,13 @@ import { combineReducers, createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
 import alert from './alert';
+import task from './task';
 
 const initialState = {};
 
 const rootReducer = combineReducers({
-    alert
+    alert,
+    task
 });
 
 const store = createStore(

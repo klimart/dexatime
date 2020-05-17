@@ -1,0 +1,43 @@
+import React, { useState, useRef } from 'react';
+import ContentEditable from 'react-contenteditable';
+
+const TaskItem = (props) => {
+    let {data: {id, idx, date, time, description, actions}} = props;
+    const [descriptionValue, setDescription] = useState(null);
+    const inputEl = useRef(null);
+
+    const handleChange = event => {
+        console.log(event.target.value);
+        setDescription(event.target.value);
+    };
+
+    const handleFocus = event => {
+        console.log('event.target', event.target);
+        // event.target.select();
+    };
+
+    const onDragEnter = event => {
+        console.log('drag over', idx);
+    };
+    return (
+        <tr draggable="true">
+            <td>{id}</td>
+            <td>{idx}</td>
+            <td>{date}</td>
+    <td><div contenteditable="true" tabindex="1" onfocus="document.execCommand('selectAll',false,null)" >{time}</div></td>
+            <td><ContentEditable
+              aria-selected={true}
+              innerRef={inputEl}
+              html={description} // innerHTML of the editable div
+              disabled={false}       // use true to disable editing
+              onChange={handleChange} // handle innerHTML change
+              tagName='div' // Use a custom HTML tag (uses a div by default)
+              onFocus={handleFocus}
+              onDragEnter={onDragEnter}
+            /></td>
+            <td>{actions}</td>
+        </tr>
+    );
+};
+
+export default TaskItem;
