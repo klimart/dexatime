@@ -1,15 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import TaskItem from './TaskItem';
 
 const TaskList = ({ tasks }) => {
+    const [mousePosition, setMousePosition] = useState({x: 0, y: 0});
+    const [dndIndex, sedDndIndex] = useState(null);
+    const [dndOverIndex, setDndOverIndex] = useState(null);
+
     let idx = 0;
     let tableRows = tasks.map(task => {
         idx++;
         task.idx = idx;
         return (
-            <TaskItem key={idx} data={task} />
+            <TaskItem
+                key={idx} data={task}
+                mouse={{mousePosition, setMousePosition}}
+                dndIdx={{dndIndex, sedDndIndex, dndOverIndex, setDndOverIndex}} />
         )
     });
 
@@ -21,7 +28,7 @@ const TaskList = ({ tasks }) => {
         description: '',
         actions: ''
     };
-    let emptyTask = <TaskItem data={emptyTaskData} />;
+    let emptyTask = <TaskItem data={emptyTaskData} mouse={{mousePosition, setMousePosition}} />;
 
     return (
         <table className="tasks-list">

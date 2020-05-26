@@ -1,12 +1,45 @@
 body {
     color: $body-color;
+    margin: 0;
+    position: relative;
+}
+
+.column.sidebar {
+    display: flex;
+    flex-direction: column;
+}
+
+h1 {
+    color: $h1-color;
+    margin: 0;
 }
 
 .main.columns {
     display: flex;
 }
 
-.column.sidebar {
-    display: flex;
-    flex-direction: column;
+table {
+    user-select: none;
+
+    th,
+    thead {
+        color: $header-color;
+        user-select: none;
+    }
+
+    tr {
+        user-select: none;
+
+        &.drag-down {
+            td {
+                border-bottom: 3px solid $dnd-highlight-color;
+            }
+        }
+
+        &.drag-up {
+            td {
+                border-top: 3px solid $dnd-highlight-color;
+            }
+        }
+    }
 }
