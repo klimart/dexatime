@@ -1,9 +1,12 @@
 import React, { useState, useRef, Fragment, useEffect } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import InputEditable from './cell/InputEditable';
 import TaskItemVirtual from './TaskItemVirtual';
+import { changeTaskOrder } from '../actions/task';
 
 const TaskItem = (props) => {
-    let {data, mouse, dndIdx = {}} = props;
+    let {data, mouse, dndIdx = {}, changeTaskOrder} = props;
     let {id, idx, date, time, description, actions} = data;
     let {mousePosition, setMousePosition} = mouse;
     let {dndIndex, sedDndIndex, dndOverIndex, setDndOverIndex} = dndIdx;
@@ -23,10 +26,12 @@ const TaskItem = (props) => {
     );
 
     const endDrag = (e) => {
+        if (parseInt(dndIndex) !== parseInt(dndOverIndex)) {
+            changeTaskOrder(dndIndex, dndOverIndex);
+        }
         sedDndIndex(null);
         setDndOverIndex(null);
         setDragOffsetY(0);
-        rowRef.current.style.opacity = 1;
         setShowDndRow(false);
         setIsDragged(false);
     };
@@ -35,9 +40,9 @@ const TaskItem = (props) => {
         setIsDragged(true);
         sedDndIndex(idx);
         setDragOffsetY(e.target.offsetHeight);
-        rowRef.current.style.opacity = 0;
+        // rowRef.current.style.opacity = 0;
         setMousePosition({x: e.clientX, y: e.clientY})
-        setShowDndRow(true);
+        // setShowDndRow(true);
     };
 
     const dragOver = e => {
@@ -97,15 +102,31 @@ const TaskItem = (props) => {
 
     useEffect(() => {
         if (isDragged) {
+            rowRef.current.style.opacity = 0;
+
             dndRowRef.current.style.width = rowRef.current.clientWidth + 'px';
             dndRowRef.current.style.position = 'absolute';
             dndRowRef.current.style.top = (mousePosition.y - dragOffsetY/2) + 'px';
             dndRowRef.current.style.left = 0 + 'px';
             dndRowRef.current.style['z-index'] = -1;
+        } else {
+
+            //rowRef.current.style.opacity = 0;
+            setTimeout(() => {
+                rowRef.current.style.opacity = 1;
+
+                if (dndRowRef.current) {
+                    dndRowRef.current.style.opacity = 0;
+                }
+            }, 50);
         }
     }, [isDragged]);
 
-    return (<Fragment>{row}{isDragged && dndRow}</Fragment>);
+    return (<Fragment>{row}{(isDragged || showDndRow) && dndRow}</Fragment>);
 };
 
-export default TaskItem;
+TaskItem.propTypes = {
+    changeTaskOrder: PropTypes.func.isRequired
+};
+
+export default connect(null, { changeTaskOrder })(TaskItem);
