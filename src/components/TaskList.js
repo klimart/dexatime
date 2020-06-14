@@ -1,15 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import TaskItem from './TaskItem';
-import { getTasks } from '../actions/task';
 
-const TaskList = ({ tasks, getTasks }) => {
-    useEffect(() => {
-        getTasks();
-    }, [getTasks]);
-
-    const [mousePosition, setMousePosition] = useState({x: 0, y: 0});
+const TaskList = ({ tasks }) => {
     const [dndIndex, sedDndIndex] = useState(null);
     const [dndOverIndex, setDndOverIndex] = useState(null);
 
@@ -21,11 +15,9 @@ const TaskList = ({ tasks, getTasks }) => {
             <TaskItem
                 key={task.id}
                 data={task}
-                mouse={{mousePosition, setMousePosition}}
                 dndIdx={{dndIndex, sedDndIndex, dndOverIndex, setDndOverIndex}} />
         )
     });
-
 
     let emptyTaskData = {
         id: '',
@@ -35,7 +27,7 @@ const TaskList = ({ tasks, getTasks }) => {
         description: '',
         actions: ''
     };
-    let emptyTask = <TaskItem data={emptyTaskData} mouse={{mousePosition, setMousePosition}} />;
+    let emptyTask = <TaskItem data={emptyTaskData} />;
 
     return (
         <table className="tasks-list">
@@ -58,8 +50,7 @@ const TaskList = ({ tasks, getTasks }) => {
 };
 
 TaskList.propTypes = {
-    tasks: PropTypes.array.isRequired,
-    getTasks: PropTypes.func.isRequired
+    tasks: PropTypes.array.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -68,4 +59,4 @@ const mapStateToProps = state => ({
     })
 });
 
-export default connect(mapStateToProps, { getTasks })(TaskList);
+export default connect(mapStateToProps)(TaskList);

@@ -1,7 +1,6 @@
 import {
     ADD_TASK,
-    CHANGE_TASK_ORDER,
-    GET_TASKS
+    CHANGE_TASK_ORDER
  } from './types';
 
 export const addTask = (task) => dispatch => {
@@ -15,12 +14,5 @@ export const changeTaskOrder = (idx1, idx2) => dispatch => {
     dispatch({
         type: CHANGE_TASK_ORDER,
         payload: { idx1, idx2 }
-    });
-};
-
-export const getTasks = () => dispatch => {
-    dispatch({
-        type: GET_TASKS,
-        payload: {}
     });
 };

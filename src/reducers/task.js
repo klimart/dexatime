@@ -1,7 +1,6 @@
 import {
     ADD_TASK,
-    CHANGE_TASK_ORDER,
-    GET_TASKS
+    CHANGE_TASK_ORDER
  } from '../actions/types';
 
 const initialState = [
@@ -19,7 +18,8 @@ export default (state = initialState, action) => {
 
     switch (type) {
         case ADD_TASK:
-            return [...state, payload];
+            payload.id = payload.idx; // ToDo change after DB management added
+            return [...state, {...payload, id: payload.idx}];
 
         case CHANGE_TASK_ORDER:
             let {idx1, idx2} = payload;
@@ -46,9 +46,6 @@ export default (state = initialState, action) => {
                         return el;
                 }
             });
-
-        case GET_TASKS:
-            return [...state];// ToDo add sort by idx
 
         default:
             return state;

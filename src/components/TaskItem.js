@@ -2,28 +2,20 @@ import React, { useState, useRef, Fragment, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import InputEditable from './cell/InputEditable';
-import TaskItemVirtual from './TaskItemVirtual';
-import { changeTaskOrder } from '../actions/task';
+import { addTask, changeTaskOrder } from '../actions/task';
 
 const TaskItem = (props) => {
-    let {data, mouse, dndIdx = {}, changeTaskOrder} = props;
+    let {data, dndIdx = {}, addTask, changeTaskOrder} = props;
     let {id, idx, date, time, description, actions} = data;
-    let {mousePosition, setMousePosition} = mouse;
     let {dndIndex, sedDndIndex, dndOverIndex, setDndOverIndex} = dndIdx;
 
+    const [didMount, setDidMount] = useState(false);
     const [descriptionText, setDescriptionText] = useState(description);
-    const [showDndRow, setShowDndRow] = useState(false);
     const [isDragged, setIsDragged] = useState(false);
     const [isDraggable, setIsDraggable] = useState(!!data.description);
-    const [dragOffsetY, setDragOffsetY] = useState(0);
     const [dndClassName, setDndClassName] = useState('');
 
     const rowRef = useRef();
-    const dndRowRef = useRef();
-
-    const dndRow = (
-        <TaskItemVirtual ref={dndRowRef} data={data} visible={showDndRow}/>
-    );
 
     const endDrag = (e) => {
         if (parseInt(dndIndex) !== parseInt(dndOverIndex)) {
@@ -31,48 +23,19 @@ const TaskItem = (props) => {
         }
         sedDndIndex(null);
         setDndOverIndex(null);
-        setDragOffsetY(0);
-        setShowDndRow(false);
         setIsDragged(false);
     };
 
     const startDrag = (e) => {
         setIsDragged(true);
         sedDndIndex(idx);
-        setDragOffsetY(e.target.offsetHeight);
-        // rowRef.current.style.opacity = 0;
-        setMousePosition({x: e.clientX, y: e.clientY})
-        // setShowDndRow(true);
     };
 
     const dragOver = e => {
         if (setDndOverIndex) {
             setDndOverIndex(idx);
         }
-
-        setMousePosition({x: e.clientX, y: e.clientY});
     };
-
-    const row = (
-        <tr ref={rowRef}
-            className={dndClassName}
-            draggable={isDraggable}
-            onDragStart={startDrag}
-            onDragEnd={endDrag}
-            onDragOver={dragOver}>
-            <td>{id}</td>
-            <td>{idx}</td>
-            <td>{date}</td>
-            <td>{time}</td>
-            <td>
-                <InputEditable
-                    content={descriptionText}
-                    setContent={setDescriptionText}
-                />
-            </td>
-            <td>{actions}</td>
-        </tr>
-    );
 
     useEffect(() => {
         if (parseInt(idx) !== parseInt(dndOverIndex)) {
@@ -96,37 +59,55 @@ const TaskItem = (props) => {
 
     useEffect(() => {
         if (isDragged) {
-            dndRowRef.current.style.top = (mousePosition.y - dragOffsetY/2) + 'px';
-        }
-    }, [mousePosition]);
-
-    useEffect(() => {
-        if (isDragged) {
             rowRef.current.style.opacity = 0;
-
-            dndRowRef.current.style.width = rowRef.current.clientWidth + 'px';
-            dndRowRef.current.style.position = 'absolute';
-            dndRowRef.current.style.top = (mousePosition.y - dragOffsetY/2) + 'px';
-            dndRowRef.current.style.left = 0 + 'px';
-            dndRowRef.current.style['z-index'] = -1;
         } else {
-
-            //rowRef.current.style.opacity = 0;
             setTimeout(() => {
                 rowRef.current.style.opacity = 1;
-
-                if (dndRowRef.current) {
-                    dndRowRef.current.style.opacity = 0;
-                }
             }, 50);
         }
     }, [isDragged]);
 
-    return (<Fragment>{row}{(isDragged || showDndRow) && dndRow}</Fragment>);
+    useEffect(() => {
+        if (!didMount) {
+            setDidMount(true);
+
+            return;
+        }
+
+        if (descriptionText) {
+            if (id) {
+                console.log(descriptionText);
+            } else {
+                addTask({idx, description: descriptionText});
+            }
+        }
+    }, [descriptionText]);
+
+    return (
+        <tr ref={rowRef}
+            className={dndClassName}
+            draggable={isDraggable}
+            onDragStart={startDrag}
+            onDragEnd={endDrag}
+            onDragOver={dragOver}>
+            <td>{id}</td>
+            <td>{idx}</td>
+            <td>{date}</td>
+            <td>{time}</td>
+            <td>
+                <InputEditable
+                    content={descriptionText}
+                    setContent={setDescriptionText}
+                />
+            </td>
+            <td>{actions}</td>
+        </tr>
+    );
 };
 
 TaskItem.propTypes = {
+    addTask: PropTypes.func.isRequired,
     changeTaskOrder: PropTypes.func.isRequired
 };
 
-export default connect(null, { changeTaskOrder })(TaskItem);
+export default connect(null, { addTask, changeTaskOrder })(TaskItem);

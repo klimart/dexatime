@@ -34,6 +34,7 @@ const Editable = ({
             (type === 'textarea' && keys.indexOf(key) > -1) ||
             (type !== 'textarea' && allKeys.indexOf(key) > -1)
         ) {
+            childRef.current.blur();
             setEditing(false);
         }
     };
