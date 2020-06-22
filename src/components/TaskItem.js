@@ -1,18 +1,20 @@
 import React, { useState, useRef, Fragment, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Moment from 'react-moment';
 import InputEditable from './cell/InputEditable';
-import { addTask, changeTaskOrder } from '../actions/task';
+import { changeTaskOrder } from '../actions/task';
+import task from '../reducers/task';
 
 const TaskItem = (props) => {
-    let {data, dndIdx = {}, addTask, changeTaskOrder} = props;
+    let {data, dndIdx = {}, changeTaskOrder, sort} = props;
     let {id, idx, date, time, description, actions} = data;
     let {dndIndex, sedDndIndex, dndOverIndex, setDndOverIndex} = dndIdx;
 
     const [didMount, setDidMount] = useState(false);
     const [descriptionText, setDescriptionText] = useState(description);
     const [isDragged, setIsDragged] = useState(false);
-    const [isDraggable, setIsDraggable] = useState(!!data.description);
+    const [isDraggable, setIsDraggable] = useState(true);
     const [dndClassName, setDndClassName] = useState('');
 
     const rowRef = useRef();
@@ -43,17 +45,20 @@ const TaskItem = (props) => {
             return;
         }
 
+        let dragOverClass;
         switch (true) {
             case parseInt(dndIndex) > parseInt(dndOverIndex):
-                setDndClassName('drag-up');
+                dragOverClass = sort.direction === 'desc' ? 'drag-down' : 'drag-up';
                 break;
             case parseInt(dndIndex) < parseInt(dndOverIndex):
-                setDndClassName('drag-down');
+                dragOverClass = sort.direction === 'desc' ? 'drag-up' : 'drag-down';
                 break;
             default:
-                setDndClassName(null);
+                dragOverClass = null;
                 break;
         }
+
+        setDndClassName(dragOverClass);
 
     }, [dndOverIndex]);
 
@@ -74,13 +79,6 @@ const TaskItem = (props) => {
             return;
         }
 
-        if (descriptionText) {
-            if (id) {
-                console.log(descriptionText);
-            } else {
-                addTask({idx, description: descriptionText});
-            }
-        }
     }, [descriptionText]);
 
     return (
@@ -92,7 +90,7 @@ const TaskItem = (props) => {
             onDragOver={dragOver}>
             <td>{id}</td>
             <td>{idx}</td>
-            <td>{date}</td>
+            <td><Moment date={date} format="DD-MM-YYYY"/></td>
             <td>{time}</td>
             <td>
                 <InputEditable
@@ -106,8 +104,12 @@ const TaskItem = (props) => {
 };
 
 TaskItem.propTypes = {
-    addTask: PropTypes.func.isRequired,
-    changeTaskOrder: PropTypes.func.isRequired
+    changeTaskOrder: PropTypes.func.isRequired,
+    sort: PropTypes.object.isRequired
 };
 
-export default connect(null, { addTask, changeTaskOrder })(TaskItem);
+const mapStateToProps = state => ({
+    sort: state.task.sort
+});
+
+export default connect(mapStateToProps, { changeTaskOrder })(TaskItem);

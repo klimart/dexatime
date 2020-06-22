@@ -3,10 +3,9 @@ import {
     CHANGE_TASK_ORDER
  } from './types';
 
-export const addTask = (task) => dispatch => {
+export const addTask = () => dispatch => {
     dispatch({
-        type: ADD_TASK,
-        payload: { task }
+        type: ADD_TASK
     });
 };
 

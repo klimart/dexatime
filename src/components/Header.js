@@ -1,11 +1,18 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { addTask } from '../actions/task';
 
-const Header = () => {
+const Header = ({addTask}) => {
     return (
         <div className="header">
-            <h1>Hello from Header</h1>
+            <button onClick={addTask}>Add Task</button>
         </div>
     );
 };
 
-export default Header;
+Header.propTypes = {
+    addTask: PropTypes.func.isRequired
+}
+
+export default connect(null, { addTask })(Header);

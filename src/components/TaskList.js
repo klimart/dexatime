@@ -19,15 +19,6 @@ const TaskList = ({ tasks }) => {
         )
     });
 
-    let emptyTaskData = {
-        id: '',
-        idx: ++maxIdx,
-        data: '',
-        time: '',
-        description: '',
-        actions: ''
-    };
-    let emptyTask = <TaskItem data={emptyTaskData} />;
 
     return (
         <table className="tasks-list">
@@ -43,7 +34,6 @@ const TaskList = ({ tasks }) => {
             </thead>
             <tbody>
                 {tableRows}
-                {emptyTask}
             </tbody>
         </table>
     );
@@ -54,8 +44,18 @@ TaskList.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    tasks: state.task.sort((a, b) => {
-        return a.idx > b.idx ? 1 : -1;
+    tasks: state.task.tasks.sort((a, b) => {
+        let orderField = state.task.sort.field;
+        let orderDir = state.task.sort.direction;
+        // List descending order
+        switch (true) {
+            case orderField === 'idx' && orderDir === 'desc':
+                return a.idx > b.idx ? -1 : 1;
+            case orderField === 'idx' && orderDir === 'asc':
+            default:
+                return a.idx > b.idx ? 1 : -1;
+        }
+
     })
 });
 
