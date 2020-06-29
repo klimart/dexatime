@@ -1,20 +1,24 @@
 import {
     ADD_TASK,
-    CHANGE_TASK_ORDER
+    CHANGE_TASK_ORDER,
+    SELECT_LAST_TASK,
+    SET_ACTIVE_TASK,
+    UPDATE_TASK
  } from '../actions/types';
 
 const initialState = {
+    activeTaskId: null,
     sort: {
         field: 'idx',
         direction: 'desc'
     },
     tasks: [
-        {id: 1, idx: 1, date: '1-05-2020', time: 300, description: 'task 1 description', actions: 'start'},
-        {id: 2, idx: 2, date: '1-05-2020', time: 300, description: 'task 2 description', actions: 'start'},
-        {id: 3, idx: 3, date: '1-05-2020', time: 300, description: 'task 3 description', actions: 'start'},
-        {id: 4, idx: 4, date: '1-05-2020', time: 300, description: 'task 4 description', actions: 'start'},
-        {id: 5, idx: 5, date: '1-05-2020', time: 300, description: 'task 5 description', actions: 'start'},
-        {id: 6, idx: 6, date: '1-05-2020', time: 300, description: 'task 6 description', actions: 'start'},
+        {id: 1, idx: 1, date: '1-05-2020', time: 300, description: 'task 1 description', actions: 'duplicate'},
+        {id: 2, idx: 2, date: '1-05-2020', time: 300, description: 'task 2 description', actions: 'duplicate'},
+        {id: 3, idx: 3, date: '1-05-2020', time: 300, description: 'task 3 description', actions: 'duplicate'},
+        {id: 4, idx: 4, date: '1-05-2020', time: 300, description: 'task 4 description', actions: 'duplicate'},
+        {id: 5, idx: 5, date: '1-05-2020', time: 300, description: 'task 5 description', actions: 'duplicate'},
+        {id: 6, idx: 6, date: '1-05-2020', time: 300, description: 'task 6 description', actions: 'duplicate'},
     ]
 };
 
@@ -35,15 +39,17 @@ export default (state = initialState, action) => {
         case ADD_TASK:
             let maxIdx = getMaxField(state.tasks, 'idx');
             let maxId = getMaxField(state.tasks, 'id');
+            let newTaskId = maxId + 1;
             let newTask = {
                 ...newTaskTemplate,
-                id: maxId + 1,
+                id: newTaskId,
                 idx: maxIdx + 1,
                 date: new Date()
             };
 
             return {
                 ...state,
+                activeTaskId: newTaskId,
                 tasks: [...state.tasks, newTask]
             };
 
@@ -76,6 +82,37 @@ export default (state = initialState, action) => {
                 })
             };
 
+        case SELECT_LAST_TASK:
+            let lastTaskIdx = getMaxField(state.tasks, 'idx');
+
+            return {
+                ...state,
+                activeTaskId: parseInt(lastTaskIdx)
+            };
+
+        case SET_ACTIVE_TASK:
+            let {id} = payload;
+
+            return {
+                ...state,
+                activeTaskId: parseInt(id)
+            };
+
+        case UPDATE_TASK:
+            let {params} = payload;
+            let taskId = payload.id;
+
+            return {
+                ...state,
+                tasks: state.tasks.map((el) => {
+                    switch (true) {
+                        case el.id === taskId:
+                            return {...el, ...params};
+                        default:
+                            return el;
+                    }
+                })
+            };
 
         default:
             return state;

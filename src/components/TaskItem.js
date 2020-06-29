@@ -2,20 +2,31 @@ import React, { useState, useRef, Fragment, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Moment from 'react-moment';
+import classNames from 'classnames';
 import InputEditable from './cell/InputEditable';
-import { changeTaskOrder } from '../actions/task';
-import task from '../reducers/task';
+import { changeTaskOrder, setActiveTask, updateTask } from '../actions/task';
+// import task from '../reducers/task';
 
+/**
+ * Task item - grid row
+ */
 const TaskItem = (props) => {
-    let {data, dndIdx = {}, changeTaskOrder, sort} = props;
+    let {
+        activeTaskId,
+        setActiveTask,
+        data,
+        dndIdx = {},
+        changeTaskOrder,
+        sort,
+        updateTask
+    } = props;
     let {id, idx, date, time, description, actions} = data;
     let {dndIndex, sedDndIndex, dndOverIndex, setDndOverIndex} = dndIdx;
 
-    const [didMount, setDidMount] = useState(false);
     const [descriptionText, setDescriptionText] = useState(description);
     const [isDragged, setIsDragged] = useState(false);
     const [isDraggable, setIsDraggable] = useState(true);
-    const [dndClassName, setDndClassName] = useState('');
+    const [currenClassName, setCurrentClassName] = useState('');
 
     const rowRef = useRef();
 
@@ -40,27 +51,26 @@ const TaskItem = (props) => {
     };
 
     useEffect(() => {
-        if (parseInt(idx) !== parseInt(dndOverIndex)) {
-            setDndClassName(null);
-            return;
+        let dragOverClass = null;
+        if (parseInt(idx) === parseInt(dndOverIndex)) {
+            switch (true) {
+                case parseInt(dndIndex) > parseInt(dndOverIndex):
+                    dragOverClass = sort.direction === 'desc' ? 'drag-down' : 'drag-up';
+                    break;
+                case parseInt(dndIndex) < parseInt(dndOverIndex):
+                    dragOverClass = sort.direction === 'desc' ? 'drag-up' : 'drag-down';
+                    break;
+                default:
+                    dragOverClass = null;
+                    break;
+            }
         }
 
-        let dragOverClass;
-        switch (true) {
-            case parseInt(dndIndex) > parseInt(dndOverIndex):
-                dragOverClass = sort.direction === 'desc' ? 'drag-down' : 'drag-up';
-                break;
-            case parseInt(dndIndex) < parseInt(dndOverIndex):
-                dragOverClass = sort.direction === 'desc' ? 'drag-up' : 'drag-down';
-                break;
-            default:
-                dragOverClass = null;
-                break;
-        }
+        let activeClass = parseInt(activeTaskId) === parseInt(id) ? 'is-active' : '';
 
-        setDndClassName(dragOverClass);
+        setCurrentClassName(classNames(dragOverClass, activeClass));
 
-    }, [dndOverIndex]);
+    }, [dndOverIndex, activeTaskId]);
 
     useEffect(() => {
         if (isDragged) {
@@ -73,24 +83,26 @@ const TaskItem = (props) => {
     }, [isDragged]);
 
     useEffect(() => {
-        if (!didMount) {
-            setDidMount(true);
-
-            return;
-        }
+        updateTask({
+            id,
+            params: {
+                description: descriptionText
+            }
+        });
 
     }, [descriptionText]);
 
     return (
         <tr ref={rowRef}
-            className={dndClassName}
+            className={currenClassName}
             draggable={isDraggable}
             onDragStart={startDrag}
             onDragEnd={endDrag}
-            onDragOver={dragOver}>
+            onDragOver={dragOver}
+            onClick={e => {setActiveTask(id)}}>
             <td>{id}</td>
             <td>{idx}</td>
-            <td><Moment date={date} format="DD-MM-YYYY"/></td>
+            <td><Moment date={date} format="DD/MM/YY"/></td>
             <td>{time}</td>
             <td>
                 <InputEditable
@@ -104,12 +116,23 @@ const TaskItem = (props) => {
 };
 
 TaskItem.propTypes = {
+    activeTaskId: PropTypes.number || null,
     changeTaskOrder: PropTypes.func.isRequired,
-    sort: PropTypes.object.isRequired
+    setActiveTask: PropTypes.func.isRequired,
+    sort: PropTypes.object.isRequired,
+    updateTask: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
+    activeTaskId: state.task.activeTaskId,
     sort: state.task.sort
 });
 
-export default connect(mapStateToProps, { changeTaskOrder })(TaskItem);
+export default connect(
+    mapStateToProps,
+    {
+        changeTaskOrder,
+        setActiveTask,
+        updateTask
+    }
+)(TaskItem);

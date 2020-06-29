@@ -30,13 +30,15 @@ table {
     tr {
         user-select: none;
 
-        &.drag-down {
+        &.drag-down,
+        &.is-active.drag-down {
             td {
                 border-bottom: 3px solid $dnd-highlight-color;
             }
         }
 
-        &.drag-up {
+        &.drag-up,
+        &.is-active.drag-up {
             td {
                 border-top: 3px solid $dnd-highlight-color;
             }

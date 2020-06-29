@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import TaskItem from './TaskItem';
+import { selectLastTask } from '../actions/task';
 
-const TaskList = ({ tasks }) => {
+const TaskList = ({ activeTaskId, tasks, selectLastTask }) => {
     const [dndIndex, sedDndIndex] = useState(null);
     const [dndOverIndex, setDndOverIndex] = useState(null);
 
@@ -19,6 +20,11 @@ const TaskList = ({ tasks }) => {
         )
     });
 
+    useEffect(() => {
+        if (!activeTaskId) {
+            selectLastTask();
+        }
+    }, [activeTaskId]);
 
     return (
         <table className="tasks-list">
@@ -40,10 +46,13 @@ const TaskList = ({ tasks }) => {
 };
 
 TaskList.propTypes = {
-    tasks: PropTypes.array.isRequired
+    activeTaskId: PropTypes.number,
+    tasks: PropTypes.array.isRequired,
+    selectLastTask: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
+    activeTaskId: state.task.activeTaskId,
     tasks: state.task.tasks.sort((a, b) => {
         let orderField = state.task.sort.field;
         let orderDir = state.task.sort.direction;
@@ -59,4 +68,7 @@ const mapStateToProps = state => ({
     })
 });
 
-export default connect(mapStateToProps)(TaskList);
+export default connect(
+    mapStateToProps,
+    {selectLastTask}
+)(TaskList);

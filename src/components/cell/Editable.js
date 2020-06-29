@@ -55,7 +55,7 @@ const Editable = ({
                 onClick={() => setEditing(true)}
             >
                 <span className={`${text ? 'text-regular' : 'text-placeholder'}`}>
-                {text || placeholder || '...'}
+                {text || placeholder || ''}
                 </span>
             </div>
             )}

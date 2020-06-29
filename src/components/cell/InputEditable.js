@@ -2,11 +2,12 @@ import React, { useState, useRef } from 'react';
 import Editable from './Editable';
 
 const InputEditable = (props) => {
+    const emptyContentText = '';
     const inputRef = useRef();
     const [inputWidth, setInputWidth] = useState('');
 
 
-    let {content = '...', setContent, name = ''} = props;
+    let {content = emptyContentText, setContent, name = ''} = props;
     const [currectContent, setCurrectContent] = useState(content);
 
     return (

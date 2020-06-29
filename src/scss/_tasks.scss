@@ -1,5 +1,18 @@
 .tasks-list {
+    tr {
+        &.is-active {
+            td {
+                border: 1px solid $dnd-highlight-color;
+            }
+        }
+    }
+
     td {
-        border: 1px solid grey;
+        border: 1px solid $grid-border-color;
+
+        span.text-placeholder {
+            display: block;
+            min-height: 18px;
+        }
     }
 }
