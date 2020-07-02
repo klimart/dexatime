@@ -1,11 +1,11 @@
-import React, { useState, useRef, Fragment, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Moment from 'react-moment';
 import classNames from 'classnames';
 import InputEditable from './cell/InputEditable';
 import { changeTaskOrder, setActiveTask, updateTask } from '../actions/task';
-// import task from '../reducers/task';
+import { timeFormatter } from '../utils/timeFormatter';
 
 /**
  * Task item - grid row
@@ -13,6 +13,7 @@ import { changeTaskOrder, setActiveTask, updateTask } from '../actions/task';
 const TaskItem = (props) => {
     let {
         activeTaskId,
+        inProgress,
         setActiveTask,
         data,
         dndIdx = {},
@@ -92,6 +93,28 @@ const TaskItem = (props) => {
 
     }, [descriptionText]);
 
+    useEffect(() => {
+        if (activeTaskId !== id) {
+            return;
+        }
+
+        let interval = null;
+        if (inProgress) {
+            interval = setInterval(() => {
+                updateTask({
+                    id,
+                    params: {
+                        time: parseInt(time) + 1
+                    }
+                });
+            }, 1000);
+        } else {
+            clearInterval(interval);
+        }
+
+        return () => clearInterval(interval);
+    }, [inProgress, time]);
+
     return (
         <tr ref={rowRef}
             className={currenClassName}
@@ -103,7 +126,7 @@ const TaskItem = (props) => {
             <td>{id}</td>
             <td>{idx}</td>
             <td><Moment date={date} format="DD/MM/YY"/></td>
-            <td>{time}</td>
+            <td>{timeFormatter(time)}</td>
             <td>
                 <InputEditable
                     content={descriptionText}
@@ -125,6 +148,7 @@ TaskItem.propTypes = {
 
 const mapStateToProps = state => ({
     activeTaskId: state.task.activeTaskId,
+    inProgress: state.task.inProgress,
     sort: state.task.sort
 });
 

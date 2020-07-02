@@ -3,11 +3,14 @@ import {
     CHANGE_TASK_ORDER,
     SELECT_LAST_TASK,
     SET_ACTIVE_TASK,
+    START_TASK,
+    STOP_TASK,
     UPDATE_TASK
  } from '../actions/types';
 
 const initialState = {
     activeTaskId: null,
+    inProgress: false,
     sort: {
         field: 'idx',
         direction: 'desc'
@@ -37,6 +40,10 @@ export default (state = initialState, action) => {
 
     switch (type) {
         case ADD_TASK:
+            if (state.inProgress) {
+                return state;
+            }
+
             let maxIdx = getMaxField(state.tasks, 'idx');
             let maxId = getMaxField(state.tasks, 'id');
             let newTaskId = maxId + 1;
@@ -91,11 +98,36 @@ export default (state = initialState, action) => {
             };
 
         case SET_ACTIVE_TASK:
+            if (state.inProgress) {
+                return state;
+            }
+
             let {id} = payload;
 
             return {
                 ...state,
                 activeTaskId: parseInt(id)
+            };
+
+        case START_TASK:
+            if (!state.activeTaskId) {
+                return state;
+            }
+
+            return {
+                ...state,
+                inProgress: true
+            };
+
+        case STOP_TASK:
+            if (!state.activeTaskId) {
+                return state;
+            }
+
+
+            return {
+                ...state,
+                inProgress: false
             };
 
         case UPDATE_TASK:

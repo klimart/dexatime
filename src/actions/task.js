@@ -3,6 +3,8 @@ import {
     CHANGE_TASK_ORDER,
     SELECT_LAST_TASK,
     SET_ACTIVE_TASK,
+    START_TASK,
+    STOP_TASK,
     UPDATE_TASK
  } from './types';
 
@@ -15,6 +17,18 @@ export const addTask = () => dispatch => {
 export const selectLastTask = () => dispatch => {
     dispatch({
         type: SELECT_LAST_TASK
+    });
+};
+
+export const startTask = () => dispatch => {
+    dispatch({
+        type: START_TASK
+    });
+};
+
+export const stopTask = () => dispatch => {
+    dispatch({
+        type: STOP_TASK
     });
 };
 

@@ -1,19 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { addTask } from '../actions/task';
+import { addTask, startTask, stopTask } from '../actions/task';
+import { timeFormatter } from '../utils/timeFormatter';
 
-const Header = ({addTask, activeTask}) => {
+const Header = ({addTask, activeTask, startTask, stopTask, inProgress}) => {
     let {id, idx, date, time, description} = activeTask;
 
     return (
         <div className="header">
             <div className="actions-before">
-                <button onClick={addTask}>Start</button>
+                {inProgress
+                    ? <button onClick={stopTask}>Stop</button>
+                    : <button onClick={startTask}>Start</button>}
             </div>
             <div className="active-task">
                 <div>
-                    <span>{time}</span>
+                    <span>{timeFormatter(time)}</span>
                 </div>
                 <div>
                     <span>{description}</span>
@@ -29,6 +32,8 @@ const Header = ({addTask, activeTask}) => {
 Header.propTypes = {
     activeTask: PropTypes.object.isRequired,
     addTask: PropTypes.func.isRequired,
+    startTask: PropTypes.func.isRequired,
+    stopTask: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => {
@@ -39,7 +44,10 @@ const mapStateToProps = state => {
     // Active task is not set
     activeTask = activeTask ? activeTask : {};
 
-    return {activeTask};
+    return {
+        activeTask,
+        inProgress: state.task.inProgress
+    };
 };
 
-export default connect(mapStateToProps, { addTask })(Header);
+export default connect(mapStateToProps, { addTask, startTask, stopTask })(Header);
