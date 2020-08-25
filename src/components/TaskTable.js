@@ -1,24 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import TaskItem from './TaskItem';
+import TaskRows from './TaskRows';
 import { selectLastTask } from '../actions/task';
 
-const TaskList = ({ activeTaskId, tasks, selectLastTask }) => {
+const TaskTable = ({ activeTaskId, tasks, selectLastTask }) => {
     const [dndIndex, sedDndIndex] = useState(null);
     const [dndOverIndex, setDndOverIndex] = useState(null);
-
-    let maxIdx;
-    let tableRows = tasks.map(task => {
-        maxIdx = !maxIdx || task.idx > maxIdx ? task.idx : maxIdx;
-
-        return (
-            <TaskItem
-                key={task.id}
-                data={task}
-                dndIdx={{dndIndex, sedDndIndex, dndOverIndex, setDndOverIndex}} />
-        )
-    });
 
     useEffect(() => {
         if (!activeTaskId) {
@@ -39,13 +27,18 @@ const TaskList = ({ activeTaskId, tasks, selectLastTask }) => {
                 </tr>
             </thead>
             <tbody>
-                {tableRows}
+                <TaskRows
+                    tasks={tasks}
+                    dndIndex={dndIndex}
+                    sedDndIndex={sedDndIndex}
+                    dndOverIndex={dndOverIndex}
+                    setDndOverIndex={setDndOverIndex} />
             </tbody>
         </table>
     );
 };
 
-TaskList.propTypes = {
+TaskTable.propTypes = {
     activeTaskId: PropTypes.number,
     tasks: PropTypes.array.isRequired,
     selectLastTask: PropTypes.func.isRequired
@@ -71,4 +64,4 @@ const mapStateToProps = state => ({
 export default connect(
     mapStateToProps,
     {selectLastTask}
-)(TaskList);
+)(TaskTable);

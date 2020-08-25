@@ -4,15 +4,15 @@ import PropTypes from 'prop-types';
 import { addTask, startTask, stopTask } from '../actions/task';
 import { timeFormatter } from '../utils/timeFormatter';
 
-const Header = ({addTask, activeTask, startTask, stopTask, inProgress}) => {
+const Header = ({addTask, activeTask, activeTaskId, startTask, stopTask, inProgress}) => {
     let {id, idx, date, time, description} = activeTask;
 
     return (
         <div className="header">
             <div className="actions-before">
                 {inProgress
-                    ? <button onClick={stopTask}>Stop</button>
-                    : <button onClick={startTask}>Start</button>}
+                    ? <button onClick={e=> stopTask(activeTaskId)}>Stop</button>
+                    : <button onClick={e => startTask(activeTaskId)}>Start</button>}
             </div>
             <div className="active-task">
                 <div>
@@ -46,6 +46,7 @@ const mapStateToProps = state => {
 
     return {
         activeTask,
+        activeTaskId: parseInt(state.task.activeTaskId),
         inProgress: state.task.inProgress
     };
 };

@@ -1,6 +1,7 @@
 import {
     ADD_TASK,
     CHANGE_TASK_ORDER,
+    LOAD_TASK_LIST,
     SELECT_LAST_TASK,
     SET_ACTIVE_TASK,
     START_TASK,
@@ -15,19 +16,11 @@ const initialState = {
         field: 'idx',
         direction: 'desc'
     },
-    tasks: [
-        {id: 1, idx: 1, date: '1-05-2020', time: 300, description: 'task 1 description', actions: 'duplicate'},
-        {id: 2, idx: 2, date: '1-05-2020', time: 300, description: 'task 2 description', actions: 'duplicate'},
-        {id: 3, idx: 3, date: '1-05-2020', time: 300, description: 'task 3 description', actions: 'duplicate'},
-        {id: 4, idx: 4, date: '1-05-2020', time: 300, description: 'task 4 description', actions: 'duplicate'},
-        {id: 5, idx: 5, date: '1-05-2020', time: 300, description: 'task 5 description', actions: 'duplicate'},
-        {id: 6, idx: 6, date: '1-05-2020', time: 300, description: 'task 6 description', actions: 'duplicate'},
-    ]
+    tasks: []
 };
 
-const newTaskTemplate = {
-    id: '', idx: '', date: '', time: 0, description: '', actions: 'start'
-};
+// Task items fields
+// id: '', idx: '', date: '', time: 0, description: '', start: ''
 
 const getMaxField = (tasks, field) => {
     return tasks.reduce((result, current) => {
@@ -44,20 +37,10 @@ export default (state = initialState, action) => {
                 return state;
             }
 
-            let maxIdx = getMaxField(state.tasks, 'idx');
-            let maxId = getMaxField(state.tasks, 'id');
-            let newTaskId = maxId + 1;
-            let newTask = {
-                ...newTaskTemplate,
-                id: newTaskId,
-                idx: maxIdx + 1,
-                date: new Date()
-            };
-
             return {
                 ...state,
-                activeTaskId: newTaskId,
-                tasks: [...state.tasks, newTask]
+                activeTaskId: payload.id,
+                tasks: [...state.tasks, payload]
             };
 
         case CHANGE_TASK_ORDER:
@@ -89,6 +72,12 @@ export default (state = initialState, action) => {
                 })
             };
 
+        case LOAD_TASK_LIST:
+            return {
+                ...state,
+                tasks: payload
+            };
+
         case SELECT_LAST_TASK:
             let lastTaskIdx = getMaxField(state.tasks, 'idx');
 
@@ -116,7 +105,8 @@ export default (state = initialState, action) => {
 
             return {
                 ...state,
-                inProgress: true
+                inProgress: true,
+                activeTaskId: parseInt(payload.id)
             };
 
         case STOP_TASK:

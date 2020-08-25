@@ -1,0 +1,8 @@
+{
+    "dbConfig": {
+        "name": "tracker1"
+    },
+    "taskTable": {
+        "name": "task1"
+    }
+}

@@ -1,14 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './reducers';
 
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
-import TaskList from './components/TaskList';
+import TaskTable from './components/TaskTable';
 import ClientForm from './components/ClientForm';
 
+import { loadTasks } from './actions/task';
+
 const App = () => {
+    useEffect(() => {
+        store.dispatch(loadTasks());
+    }, []);
+
     return (
         <Provider store={store}>
             <Router>
@@ -20,12 +26,12 @@ const App = () => {
                             <Switch>
                                 <Route
                                     path='/'
-                                    component={TaskList}
+                                    component={TaskTable}
                                 />
                                 <Route
                                     exact
                                     path='/job'
-                                    component={TaskList}
+                                    component={TaskTable}
                                 />
                                 <Route
                                     exact

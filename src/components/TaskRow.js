@@ -10,7 +10,7 @@ import { timeFormatter } from '../utils/timeFormatter';
 /**
  * Task item - grid row
  */
-const TaskItem = (props) => {
+const TaskRow = (props) => {
     let {
         activeTaskId,
         inProgress,
@@ -49,6 +49,12 @@ const TaskItem = (props) => {
         if (setDndOverIndex) {
             setDndOverIndex(idx);
         }
+    };
+
+    const getDateFromSeconds = (seconds) => {
+        let date = new Date(parseInt(seconds));
+
+        return date.toDateString();
     };
 
     useEffect(() => {
@@ -103,17 +109,15 @@ const TaskItem = (props) => {
             interval = setInterval(() => {
                 updateTask({
                     id,
-                    params: {
-                        time: parseInt(time) + 1
-                    }
+                    params: {}
                 });
-            }, 1000);
+            }, 250);
         } else {
             clearInterval(interval);
         }
 
         return () => clearInterval(interval);
-    }, [inProgress, time]);
+    }, [inProgress, time, activeTaskId]);
 
     return (
         <tr ref={rowRef}
@@ -122,10 +126,10 @@ const TaskItem = (props) => {
             onDragStart={startDrag}
             onDragEnd={endDrag}
             onDragOver={dragOver}
-            onClick={e => {setActiveTask(id)}}>
+            onClick={e => setActiveTask(id)}>
             <td>{id}</td>
             <td>{idx}</td>
-            <td><Moment date={date} format="DD/MM/YY"/></td>
+            <td><Moment date={getDateFromSeconds(date)} format="DD/MM/YY"/></td>
             <td>{timeFormatter(time)}</td>
             <td>
                 <InputEditable
@@ -138,7 +142,7 @@ const TaskItem = (props) => {
     );
 };
 
-TaskItem.propTypes = {
+TaskRow.propTypes = {
     activeTaskId: PropTypes.number || null,
     changeTaskOrder: PropTypes.func.isRequired,
     setActiveTask: PropTypes.func.isRequired,
@@ -159,4 +163,4 @@ export default connect(
         setActiveTask,
         updateTask
     }
-)(TaskItem);
+)(TaskRow);
