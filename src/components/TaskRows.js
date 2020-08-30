@@ -17,7 +17,7 @@ const TaskRows = ({
     )
 });
 
-TaskRows.PropTypes = {
+TaskRows.propTypes = {
     tasks: PropTypes.array,
     dndIndex: PropTypes.number,
     sedDndIndex: PropTypes.func,

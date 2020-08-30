@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import TaskRows from './TaskRows';
+import HeartBeat from '../services/HeartBeat';
 import { selectLastTask } from '../actions/task';
 
 const TaskTable = ({ activeTaskId, tasks, selectLastTask }) => {
@@ -15,26 +16,29 @@ const TaskTable = ({ activeTaskId, tasks, selectLastTask }) => {
     }, [activeTaskId]);
 
     return (
-        <table className="tasks-list">
-            <thead>
-                <tr>
-                    <th>id</th>
-                    <th>idx</th>
-                    <th>date</th>
-                    <th>time</th>
-                    <th>description</th>
-                    <th>actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <TaskRows
-                    tasks={tasks}
-                    dndIndex={dndIndex}
-                    sedDndIndex={sedDndIndex}
-                    dndOverIndex={dndOverIndex}
-                    setDndOverIndex={setDndOverIndex} />
-            </tbody>
-        </table>
+        <Fragment>
+            <HeartBeat />
+            <table className="tasks-list">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>idx</th>
+                        <th>date</th>
+                        <th>time</th>
+                        <th>description</th>
+                        <th>actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <TaskRows
+                        tasks={tasks}
+                        dndIndex={dndIndex}
+                        sedDndIndex={sedDndIndex}
+                        dndOverIndex={dndOverIndex}
+                        setDndOverIndex={setDndOverIndex} />
+                </tbody>
+            </table>
+        </Fragment>
     );
 };
 

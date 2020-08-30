@@ -99,26 +99,6 @@ const TaskRow = (props) => {
 
     }, [descriptionText]);
 
-    useEffect(() => {
-        if (activeTaskId !== id) {
-            return;
-        }
-
-        let interval = null;
-        if (inProgress) {
-            interval = setInterval(() => {
-                updateTask({
-                    id,
-                    params: {}
-                });
-            }, 250);
-        } else {
-            clearInterval(interval);
-        }
-
-        return () => clearInterval(interval);
-    }, [inProgress, time, activeTaskId]);
-
     return (
         <tr ref={rowRef}
             className={currenClassName}
