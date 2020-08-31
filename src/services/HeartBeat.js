@@ -5,8 +5,6 @@ import { updateTask } from '../actions/task';
 
 const HeartBeat = ({activeTaskId, inProgress, updateTask}) => {
     useEffect(() => {
-        debugger;
-
         let interval = null;
         if (inProgress && activeTaskId) {
             interval = setInterval(() => {
