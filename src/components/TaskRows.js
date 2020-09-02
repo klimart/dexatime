@@ -7,13 +7,15 @@ const TaskRows = ({
     dndIndex,
     sedDndIndex,
     dndOverIndex,
-    setDndOverIndex
+    setDndOverIndex,
+    hiddenColumns
 }) => tasks.map(task => {
     return (
         <TaskRow
             key={task.id}
             data={task}
-            dndIdx={{dndIndex, sedDndIndex, dndOverIndex, setDndOverIndex}} />
+            dndIdx={{dndIndex, sedDndIndex, dndOverIndex, setDndOverIndex}}
+            hiddenColumns={hiddenColumns} />
     )
 });
 
@@ -22,7 +24,8 @@ TaskRows.propTypes = {
     dndIndex: PropTypes.number,
     sedDndIndex: PropTypes.func,
     dndOverIndex: PropTypes.number,
-    setDndOverIndex: PropTypes.func
+    setDndOverIndex: PropTypes.func,
+    hiddenColumns: PropTypes.array
 };
 
 export default TaskRows;

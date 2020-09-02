@@ -19,7 +19,8 @@ const TaskRow = (props) => {
         dndIdx = {},
         changeTaskOrder,
         sort,
-        updateTask
+        updateTask,
+        hiddenColumns
     } = props;
     let {id, idx, date, time, description, actions} = data;
     let {dndIndex, sedDndIndex, dndOverIndex, setDndOverIndex} = dndIdx;
@@ -90,6 +91,10 @@ const TaskRow = (props) => {
     }, [isDragged]);
 
     useEffect(() => {
+        if (descriptionText === description) {
+            return;
+        }
+
         updateTask({
             id,
             params: {
@@ -107,17 +112,21 @@ const TaskRow = (props) => {
             onDragEnd={endDrag}
             onDragOver={dragOver}
             onClick={e => setActiveTask(id)}>
-            <td>{id}</td>
-            <td>{idx}</td>
-            <td><Moment date={getDateFromSeconds(date)} format="DD/MM/YY"/></td>
-            <td>{timeFormatter(time)}</td>
-            <td>
+            {!hiddenColumns.includes('id') && <td className="column-id">{id}</td>}
+            {!hiddenColumns.includes('idx') && <td className="column-idx">{idx}</td>}
+            {!hiddenColumns.includes('date')
+            && <td className="column-time">
+                <Moment date={getDateFromSeconds(date)} format="DD/MM/YY"/>
+            </td>}
+            {!hiddenColumns.includes('time') && <td className="column-time">{timeFormatter(time)}</td>}
+            {!hiddenColumns.includes('description')
+            && <td className="column-description">
                 <InputEditable
                     content={descriptionText}
                     setContent={setDescriptionText}
                 />
-            </td>
-            <td>{actions}</td>
+            </td>}
+            {!hiddenColumns.includes('actions') && <td className="column-actions">{actions}</td>}
         </tr>
     );
 };
@@ -127,7 +136,8 @@ TaskRow.propTypes = {
     changeTaskOrder: PropTypes.func.isRequired,
     setActiveTask: PropTypes.func.isRequired,
     sort: PropTypes.object.isRequired,
-    updateTask: PropTypes.func.isRequired
+    updateTask: PropTypes.func.isRequired,
+    hiddenColumns: PropTypes.array
 };
 
 const mapStateToProps = state => ({

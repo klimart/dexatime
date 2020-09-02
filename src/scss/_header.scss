@@ -1,0 +1,87 @@
+.header {
+    display: flex;
+    height: 75px;
+    font-size: $font-size;
+    border: 1px solid $dnd-highlight-color;
+    margin: 3px 2px;
+
+    .actions-before,
+    .actions-after,
+    .active-time,
+    .active-description {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .actions-before {
+        flex: 1;
+
+        button {
+            font-size: $font-size;
+            line-height: 0;
+        }
+
+        svg:not(.MuiSvgIcon-colorDisabled):hover {
+            color: $header-hover-color;
+        }
+    }
+
+    .actions-after {
+        flex: 1;
+
+        button {
+            font-size: $font-size;
+            line-height: 23px;
+            padding: 3px 6px 3px 0;
+            font-weight: bold;
+        }
+    }
+
+    .active-task {
+        flex: 4;
+        display: flex;
+    }
+
+    .active-time {
+        flex: 1;
+    }
+
+    .active-description {
+        flex: 3;
+    }
+
+    .add-new-task {
+        display: flex;
+        align-items: flex-end;
+
+        &.disabled {
+            > svg,
+            > span {
+                color: $color-disabled;
+            }
+
+            &:hover {
+                > svg,
+                > span {
+                    color: $color-disabled;
+                }
+            }
+        }
+
+        &:hover {
+            > svg,
+            > span {
+                cursor: pointer;
+                color: $header-hover-color;
+            }
+        }
+
+        > svg,
+        > span {
+            cursor: pointer;
+            color: $color-blue-san-marino;
+        }
+    }
+}

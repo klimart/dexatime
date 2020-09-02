@@ -8,6 +8,7 @@ import { selectLastTask } from '../actions/task';
 const TaskTable = ({ activeTaskId, tasks, selectLastTask }) => {
     const [dndIndex, sedDndIndex] = useState(null);
     const [dndOverIndex, setDndOverIndex] = useState(null);
+    const hiddenColumns = ['idx', 'id'];
 
     useEffect(() => {
         if (!activeTaskId) {
@@ -21,12 +22,12 @@ const TaskTable = ({ activeTaskId, tasks, selectLastTask }) => {
             <table className="tasks-list">
                 <thead>
                     <tr>
-                        <th>id</th>
-                        <th>idx</th>
-                        <th>date</th>
-                        <th>time</th>
-                        <th>description</th>
-                        <th>actions</th>
+                        {!hiddenColumns.includes('id') && <th className="column-id">id</th>}
+                        {!hiddenColumns.includes('idx') && <th className="column-idx">idx</th>}
+                        {!hiddenColumns.includes('date') && <th className="column-date">date</th>}
+                        {!hiddenColumns.includes('time') && <th className="column-time">time</th>}
+                        {!hiddenColumns.includes('description') && <th className="column-description">description</th>}
+                        {!hiddenColumns.includes('actions') && <th className="column-actions">actions</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -35,7 +36,8 @@ const TaskTable = ({ activeTaskId, tasks, selectLastTask }) => {
                         dndIndex={dndIndex}
                         sedDndIndex={sedDndIndex}
                         dndOverIndex={dndOverIndex}
-                        setDndOverIndex={setDndOverIndex} />
+                        setDndOverIndex={setDndOverIndex}
+                        hiddenColumns={hiddenColumns} />
                 </tbody>
             </table>
         </Fragment>

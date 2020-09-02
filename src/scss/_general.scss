@@ -1,12 +1,19 @@
 body {
     color: $body-color;
+    font-family: $font-family-general;
     margin: 0;
     position: relative;
 }
 
-.column.sidebar {
-    display: flex;
-    flex-direction: column;
+.column {
+    &.content {
+        flex: 1;
+    }
+
+    &.sidebar {
+        display: flex;
+        flex-direction: column;
+    }
 }
 
 h1 {

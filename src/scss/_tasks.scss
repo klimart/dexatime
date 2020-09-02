@@ -1,8 +1,20 @@
 .tasks-list {
+    width: 100%;
+
+    th,
+    td {
+        font-size: 20px;
+    }
+
+    th {
+        text-transform: capitalize;
+    }
+
     tr {
         &.is-active {
             td {
                 border: 1px solid $dnd-highlight-color;
+                background: $dnd-highlight-color;
             }
         }
     }
@@ -13,6 +25,19 @@
         span.text-placeholder {
             display: block;
             min-height: 18px;
+        }
+
+        input[type=text] {
+            font-size: 18px;
+            width: 100%;
+        }
+    }
+
+    .column {
+        &-date,
+        &-time,
+        &-actions {
+            width: 18%;
         }
     }
 }

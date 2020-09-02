@@ -1,6 +1,7 @@
 import React from 'react';
 
 export const timeFormatter = (totalSeconds) => {
+    totalSeconds = totalSeconds !== undefined ? totalSeconds : 0;
     let hours = Math.floor(totalSeconds / 3600);
     totalSeconds %= 3600;
     let minutes = Math.floor(totalSeconds / 60);

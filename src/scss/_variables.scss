@@ -1,5 +1,15 @@
+$color-blue-san-marino: #3f51b5;
+$color-blue-sappfire: #28399a;
+$color-blue-royal: #6175E5;
+
 $body-color: rgb(11, 10, 20);
-$header-color: blue;
+$header-color: $color-blue-san-marino;
+$header-hover-color: $color-blue-sappfire;
 $h1-color: rgb(81, 207, 49);
-$dnd-highlight-color: rgb(105, 105, 238);
-$grid-border-color: grey;
+$dnd-highlight-color:$color-blue-royal;
+$grid-border-color: $color-blue-san-marino;
+$font-size: 18px;
+$color-disabled: rgba(0, 0, 0, 0.26);
+
+$font-family-sans: 'sans-serif';
+$font-family-general: $font-family-sans;
