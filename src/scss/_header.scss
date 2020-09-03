@@ -1,9 +1,17 @@
+.header-wrapper {
+    background: $background-color;
+    padding: 3px 2px 0;
+    position: sticky;
+    top: 0;
+}
+
 .header {
+    background: $background-color;
     display: flex;
     height: 75px;
     font-size: $font-size;
     border: 1px solid $dnd-highlight-color;
-    margin: 3px 2px;
+    margin: 0 0 5px;
 
     .actions-before,
     .actions-after,
