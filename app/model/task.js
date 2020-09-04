@@ -95,6 +95,20 @@ const TaskModel = () => {
         return updateResult;
     }
 
+    let deleteTask = (taskId) => {
+        let deleteTasksQuery = `DELETE FROM ${taskTableName} WHERE id=${taskId}`;
+        let deleteTasksStmt = connection.prepare(deleteTasksQuery);
+
+        let result;
+        try {
+            result = deleteTasksStmt.run();
+        } catch (error) {
+            result = false;
+        }
+
+        return result;
+    }
+
     let getTasksList = () => {
         let getTasksQuery = `SELECT * FROM ${taskTableName}`;
         let getTasksStmt = connection.prepare(getTasksQuery);
@@ -224,6 +238,7 @@ const TaskModel = () => {
     return {
         addNewTask,
         changeTasksOrder,
+        deleteTask,
         getTasksList,
         startTaskById,
         stopTaskById,

@@ -1,6 +1,7 @@
 import {
     ADD_TASK,
     CHANGE_TASK_ORDER,
+    DELETE_TASK,
     LOAD_TASK_LIST,
     SELECT_LAST_TASK,
     SET_ACTIVE_TASK,
@@ -71,6 +72,16 @@ export default (state = initialState, action) => {
                     }
                 })
             };
+
+        case DELETE_TASK:
+            let deleteTaskId = payload.id;
+
+            return {
+                ...state,
+                tasks: state.tasks.filter((el) => {
+                    return el.id !== deleteTaskId;
+                })
+            }
 
         case LOAD_TASK_LIST:
             return {

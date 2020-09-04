@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import InputEditable from './cell/InputEditable';
 import { changeTaskOrder, setActiveTask, updateTask } from '../actions/task';
 import { timeFormatter } from '../utils/timeFormatter';
+import Actions from './cell/Actions';
 
 /**
  * Task item - grid row
@@ -22,7 +23,7 @@ const TaskRow = (props) => {
         updateTask,
         hiddenColumns
     } = props;
-    let {id, idx, date, time, description, actions} = data;
+    let {id, idx, date, time, description} = data;
     let {dndIndex, sedDndIndex, dndOverIndex, setDndOverIndex} = dndIdx;
 
     const [descriptionText, setDescriptionText] = useState(description);
@@ -126,7 +127,10 @@ const TaskRow = (props) => {
                     setContent={setDescriptionText}
                 />
             </td>}
-            {!hiddenColumns.includes('actions') && <td className="column-actions">{actions}</td>}
+            {!hiddenColumns.includes('actions')
+            && <td className="column-actions">
+                <Actions taskId={id} />
+            </td>}
         </tr>
     );
 };

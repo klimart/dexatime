@@ -3,6 +3,7 @@ import { ipcRenderer } from 'electron';
 import {
     ADD_TASK,
     CHANGE_TASK_ORDER,
+    DELETE_TASK,
     LOAD_TASK_LIST,
     SELECT_LAST_TASK,
     SET_ACTIVE_TASK,
@@ -18,6 +19,24 @@ export const addTask = () => dispatch => {
             type: ADD_TASK,
             payload: newTask
         });
+    });
+};
+
+export const deleteTask = (taskId) => dispatch => {
+    if (!taskId) {
+        return;
+    }
+
+    ipcRenderer.send('task:delete', taskId);
+    ipcRenderer.once('task:deleted', (event, result) => {
+        if (result) {
+            dispatch({
+                type: DELETE_TASK,
+                payload: {
+                    id: taskId
+                }
+            });
+        }
     });
 };
 

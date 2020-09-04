@@ -9,6 +9,7 @@ const { app, BrowserWindow, Menu, ipcMain } = electron;
 const {
     addNewTask,
     changeTasksOrder,
+    deleteTask,
     getTasksList,
     startTaskById,
     stopTaskById,
@@ -36,6 +37,12 @@ ipcMain.on('task:new', () => {
     let newTask = addNewTask();
     console.log('newTask', newTask);
     mainWindow.webContents.send('task:added', newTask);
+});
+
+ipcMain.on('task:delete', (event, taskId) => {
+    let result = deleteTask(taskId);
+    console.log('Delete Task', taskId);
+    mainWindow.webContents.send('task:deleted', result ? true : false);
 });
 
 ipcMain.on('task:list:load', () => {
