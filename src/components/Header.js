@@ -6,6 +6,8 @@ import { timeFormatter } from '../utils/timeFormatter';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import AddIcon from '@material-ui/icons/Add';
+import Tooltip from '@material-ui/core/Tooltip';
+import Button from '@material-ui/core/Button';
 
 const Header = ({addTask, activeTask, activeTaskId, startTask, stopTask, inProgress}) => {
     let {id, idx, date, time, description} = activeTask;
@@ -13,19 +15,24 @@ const Header = ({addTask, activeTask, activeTaskId, startTask, stopTask, inProgr
     return (
         <div className="header-wrapper">
             <div className="header">
-                <div className="actions-before" title={inProgress ? 'Pause Task' : 'Start Task'}>
-                    <button>
+                <div className="actions-before">
+                    <Button
+                        variant="outlined"
+                        color={inProgress ? 'primary' : 'disabled'}
+                        onClick={e => inProgress ? stopTask(activeTaskId) : startTask(activeTaskId)}>
                         {inProgress
-                            ? <PauseIcon
-                                color="primary"
-                                fontSize="large"
-                                onClick={e => stopTask(activeTaskId)} />
-                            : <PlayArrowIcon
-                                color={activeTaskId ? 'primary' : 'disabled'}
-                                fontSize="large"
-                                onClick={e => startTask(activeTaskId)} />
+                            ? <Tooltip title="Pause" arrow>
+                                <PauseIcon
+                                    color="primary"
+                                    fontSize="large" />
+                            </Tooltip>
+                            : <Tooltip title="Start" arrow>
+                                <PlayArrowIcon
+                                    color={activeTaskId ? 'primary' : 'disabled'}
+                                    fontSize="large" />
+                            </Tooltip>
                         }
-                    </button>
+                    </Button>
                 </div>
                 <div className="active-task">
                     <div className="active-time">
@@ -36,13 +43,16 @@ const Header = ({addTask, activeTask, activeTaskId, startTask, stopTask, inProgr
                     </div>
                 </div>
                 <div className="actions-after">
-                    <button
-                        title="Add New Task"
-                        className={inProgress ? 'add-new-task disabled' : 'add-new-task'}
-                        onClick={e => {if (inProgress) return; addTask()}}>
-                        <AddIcon />
-                        <span>New</span>
-                    </button>
+                    <Tooltip title="Add New Task" arrow>
+                        <Button
+                            variant="outlined"
+                            color={inProgress ? 'disabled' : 'primary'}
+                            className={inProgress ? 'add-new-task disabled' : 'add-new-task'}
+                            onClick={e => inProgress ? null : addTask()}
+                            startIcon={<AddIcon />}>
+                            New
+                        </Button>
+                    </Tooltip>
                 </div>
             </div>
         </div>
