@@ -1,13 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { addTask, startTask, stopTask } from '../actions/task';
-import { timeFormatter } from '../utils/timeFormatter';
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import AddIcon from '@material-ui/icons/Add';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
+import { addTask, startTask, stopTask } from '@Client/actions/task';
+import { timeFormatter } from '@Client/utils/timeFormatter';
 
 const Header = ({addTask, activeTask, activeTaskId, startTask, stopTask, inProgress}) => {
     let {id, idx, date, time, description} = activeTask;

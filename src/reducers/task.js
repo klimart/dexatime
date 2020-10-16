@@ -8,7 +8,7 @@ import {
     START_TASK,
     STOP_TASK,
     UPDATE_TASK
- } from '../actions/types';
+ } from '@Client/actions/types';
 
 const initialState = {
     activeTaskId: null,

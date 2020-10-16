@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { deleteTask } from '../../actions/task';
+import { deleteTask } from '@Client/actions/task';
 import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import Tooltip from '@material-ui/core/Tooltip';
-import DeleteConfirmationDialog from '../DeleteConfirmation';
+import DeleteConfirmationDialog from '@Client/components/DeleteConfirmation';
 
 const Actions = ({taskId, deleteTask}) => {
     const [isOpenDeleteConfirm, setOpenDeleteConfirm] = useState(false);

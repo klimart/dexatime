@@ -1,4 +1,5 @@
 .tasks-list {
+    border-spacing: 1px;
     width: 100%;
 
     th,
@@ -25,6 +26,7 @@
 
     td {
         border: 1px solid $grid-border-color;
+        padding: 5px;
 
         span.text-placeholder {
             display: block;

@@ -52,3 +52,16 @@ table {
         }
     }
 }
+
+.alerts-block {
+    bottom: 0;
+    max-height: 0;
+    position: fixed;
+    transition: max-height 0.5s ease-out;
+    width: 100%;
+
+    &.has-alert {
+        max-height: 1000px;
+        transition: max-height 0.5s ease-in;
+    }
+}

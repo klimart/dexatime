@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import Editable from './Editable';
+import Editable from '@Client/components/cell/Editable';
 
 const InputEditable = (props) => {
     const emptyContentText = '';

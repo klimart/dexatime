@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import TaskRow from './TaskRow';
+import TaskRow from '@Client/components/TaskRow';
 
 const TaskRows = ({
     tasks,

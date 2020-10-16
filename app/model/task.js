@@ -140,6 +140,7 @@ const TaskModel = () => {
     }
 
     let stopTaskById = (taskId) => {
+        taskId = parseInt(taskId);
         let getStopTaskQuery = `SELECT * FROM ${taskTableName} WHERE rowid=${taskId}`;
         let getStopTaskStmt = connection.prepare(getStopTaskQuery);
 
@@ -190,15 +191,17 @@ const TaskModel = () => {
         }
 
         let hasChanges = taskParams.idx && (taskParams.idx !== savedTaskData.idx)
-            || taskParams.description && (taskParams.description !== savedTaskData.description);
+            || ![null, undefined].includes(taskParams.description) && (taskParams.description !== savedTaskData.description)
+            || ![null, undefined].includes(taskParams.time) && (taskParams.time !== savedTaskData.time);
 
         if (hasChanges) {
             let taskIdx = taskParams.idx || savedTaskData.idx;
-            let taskDescription = taskParams.description || savedTaskData.description;
+            let taskDescription = ![null, undefined].includes(taskParams.description) ? taskParams.description : savedTaskData.description;
+            let updateTaskTime = ![null, undefined].includes(taskParams.time) ? taskParams.time : savedTaskData.time;
 
             let updateTaskQuery =
                 `UPDATE ${taskTableName}
-                    SET idx=${taskIdx}, description='${taskDescription}'
+                    SET idx=${taskIdx}, description='${taskDescription}', time=${updateTaskTime}
                 WHERE id=${taskId}`;
             console.log('Update task query', updateTaskQuery);
             let updateTaskStmt = connection.prepare(updateTaskQuery);

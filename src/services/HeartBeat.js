@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { updateTask } from '../actions/task';
+import { updateTask } from '@Client/actions/task';
 
 const HeartBeat = ({activeTaskId, inProgress, updateTask}) => {
     useEffect(() => {

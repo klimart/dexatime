@@ -7,6 +7,7 @@ const Editable = ({
     children,
     childRef,
     setInputWidth,
+    isEditable = true,
     ...props
 }) => {
     const [isEditing, setEditing] = useState(false);
@@ -52,7 +53,7 @@ const Editable = ({
             <div
                 ref={editableRef}
                 className={`editable-${type}`}
-                onClick={() => setEditing(true)}
+                onClick={() => isEditable && setEditing(true)}
             >
                 <span className={`${text ? 'text-regular' : 'text-placeholder'}`}>
                 {text || placeholder || ''}

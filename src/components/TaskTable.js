@@ -1,9 +1,9 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import TaskRows from './TaskRows';
-import HeartBeat from '../services/HeartBeat';
-import { selectLastTask } from '../actions/task';
+import TaskRows from '@Client/components/TaskRows';
+import HeartBeat from '@Client/services/HeartBeat';
+import { selectLastTask } from '@Client/actions/task';
 
 const TaskTable = ({ activeTaskId, tasks, selectLastTask }) => {
     const [dndIndex, sedDndIndex] = useState(null);

@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import store from './reducers';
+import store from '@Client/reducers';
+import Alert from '@Client/components/Alert';
+import Header from '@Client/components/Header';
+import Sidebar from '@Client/components/Sidebar';
+import TaskTable from '@Client/components/TaskTable';
+import ClientForm from '@Client/components/ClientForm';
 
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
-import TaskTable from './components/TaskTable';
-import ClientForm from './components/ClientForm';
-
-import { loadTasks } from './actions/task';
+import { loadTasks } from '@Client/actions/task';
 
 const App = () => {
     useEffect(() => {
@@ -41,6 +41,7 @@ const App = () => {
                             </Switch>
                         </div>
                     </div>
+                    <Alert />
                 </div>
             </Router>
         </Provider>

@@ -80,7 +80,10 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx'],
+    alias: {
+      '@Client': path.resolve(__dirname, 'src/')
+    }
   },
   devServer: {
     historyApiFallback: true,

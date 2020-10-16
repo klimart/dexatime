@@ -3,10 +3,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Moment from 'react-moment';
 import classNames from 'classnames';
-import InputEditable from './cell/InputEditable';
-import { changeTaskOrder, setActiveTask, updateTask } from '../actions/task';
-import { timeFormatter } from '../utils/timeFormatter';
-import Actions from './cell/Actions';
+import { changeTaskOrder, setActiveTask, updateTask } from '@Client/actions/task';
+import { timeFormatter } from '@Client/utils/timeFormatter';
+import InputEditable from '@Client/components/cell/InputEditable';
+import Actions from '@Client/components/cell/Actions';
+import EditableTime from '@Client/components/cell/EditableTime';
 
 /**
  * Task item - grid row
@@ -30,6 +31,8 @@ const TaskRow = (props) => {
     const [isDragged, setIsDragged] = useState(false);
     const [isDraggable, setIsDraggable] = useState(true);
     const [currenClassName, setCurrentClassName] = useState('');
+    const [inputTime, setInputTime] = useState(timeFormatter(time));
+    const [newTimeValue, setNewTimeValue] = useState(null);
 
     const rowRef = useRef();
 
@@ -105,6 +108,19 @@ const TaskRow = (props) => {
 
     }, [descriptionText]);
 
+    useEffect(() => {
+        setInputTime(timeFormatter(time));
+    }, [time]);
+
+    useEffect(() => {
+        updateTask({
+            id,
+            params: {
+                time: newTimeValue
+            }
+        });
+    }, [newTimeValue]);
+
     return (
         <tr ref={rowRef}
             className={currenClassName}
@@ -119,7 +135,13 @@ const TaskRow = (props) => {
             && <td className="column-time">
                 <Moment date={getDateFromSeconds(date)} format="DD/MM/YY"/>
             </td>}
-            {!hiddenColumns.includes('time') && <td className="column-time">{timeFormatter(time)}</td>}
+            {!hiddenColumns.includes('time')
+            && <td className="column-time">
+                <EditableTime
+                    inputTime={inputTime}
+                    setNewTimeValue={setNewTimeValue}
+                    inProgress={inProgress} />
+            </td>}
             {!hiddenColumns.includes('description')
             && <td className="column-description">
                 <InputEditable

@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const timeFormatter = (totalSeconds) => {
     totalSeconds = totalSeconds !== undefined ? totalSeconds : 0;
     let hours = Math.floor(totalSeconds / 3600);
@@ -9,5 +7,14 @@ export const timeFormatter = (totalSeconds) => {
     let seconds = totalSeconds % 60;
     var formattedSeconds = ('0' + seconds).slice(-2);
 
-    return (<span>{hours}:{formattedMinutes}:{formattedSeconds}</span>);
+    return `${hours}:${formattedMinutes}:${formattedSeconds}`;
+};
+
+export const convertTimeToSeconds = (formattedTime) => {
+    let [hours, minutes, seconds] = formattedTime.split(':');
+    hours = parseInt(hours);
+    minutes = parseInt(minutes);
+    seconds = parseInt(seconds);
+
+    return hours * 3600 + minutes * 60 + seconds;
 };
