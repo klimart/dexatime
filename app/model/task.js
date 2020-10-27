@@ -1,5 +1,6 @@
 const Adapter = require('../db/adapter');
 const Config = require('config');
+const logger = require('./logger');
 
 const TaskModel = () => {
     let connection = Adapter.getConnection();
@@ -17,7 +18,7 @@ const TaskModel = () => {
         let maxIdxQuery = `SELECT MAX(idx) FROM ${taskTableName}`;
         let maxIdxStmt = connection.prepare(maxIdxQuery);
         let maxIdx = maxIdxStmt.pluck().get();
-        console.log('maxIdx:', maxIdx);
+        logger.info('maxIdx:', maxIdx);
         let newIdx = maxIdx ? maxIdx + 1 : 1;
         let newTime = 0;
         let newDescription = '';
@@ -67,7 +68,7 @@ const TaskModel = () => {
             task1Id = task1.id;
             task2Id = task2.id;
         } catch (error) {
-            console.log('Get task by id error', error);
+            logger.error('Get task by id error', error.message);
 
             return false;
         }
@@ -87,7 +88,7 @@ const TaskModel = () => {
             updateTask1Stmt.run();
             updateTask2Stmt.run();
         } catch (error) {
-            console.log('Update task index error', error);
+            logger.error('Update task index error', error.message);
 
             updateResult = false;
         }
@@ -156,7 +157,7 @@ const TaskModel = () => {
                 stopTaskTime = stopTaskTime + currentSessionTime;
             }
         } catch (error) {
-            console.log('Stop task query error', error);
+            logger.error('Stop task query error', error.message)
             stopTaskTime = 0;
         }
 
@@ -203,14 +204,14 @@ const TaskModel = () => {
                 `UPDATE ${taskTableName}
                     SET idx=${taskIdx}, description='${taskDescription}', time=${updateTaskTime}
                 WHERE id=${taskId}`;
-            console.log('Update task query', updateTaskQuery);
+            logger.info('Update task query', updateTaskQuery);
             let updateTaskStmt = connection.prepare(updateTaskQuery);
 
             let updateResult;
             try {
                 updateResult = updateTaskStmt.run();
             } catch (error) {
-                console.error('Update task error');
+                logger.error('Update task error')
                 updateResult = false;
             }
         }
@@ -234,7 +235,7 @@ const TaskModel = () => {
             updatedTaskData = {};
         }
 
-        console.log('Result updatedTaskData', updatedTaskData);
+        logger.info('Result updatedTaskData', updatedTaskData);
         return updatedTaskData;
     }
 

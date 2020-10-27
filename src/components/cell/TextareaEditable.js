@@ -1,11 +1,10 @@
 import React, { useState, useRef } from 'react';
 import Editable from '@Client/components/cell/Editable';
 
-const InputEditable = (props) => {
+const TextareaEditable = (props) => {
     const emptyContentText = '';
     const inputRef = useRef();
     const [inputWidth, setInputWidth] = useState('');
-
 
     let {content = emptyContentText, setContent, name = ''} = props;
     const [currectContent, setCurrectContent] = useState(content);
@@ -15,29 +14,27 @@ const InputEditable = (props) => {
             text={content}
             placeholder={content}
             childRef={inputRef}
-            type='input'
+            type='textarea'
             setInputWidth={setInputWidth}>
-            <input
+            <textarea
                 ref={inputRef}
-                type='text'
                 name={name}
-                className=''
+                className=""
                 placeholder={currectContent}
-                value={currectContent}
+                defaultValue={currectContent}
                 onChange={e => setCurrectContent(e.target.value)}
                 onBlur={e => setContent(currectContent)}
                 style={{
                     maxWidth: inputWidth,
                     width: '100%',
-                    position: 'absolute',
-                    top: '10px',
-                    display: 'block',
+                    height: '100%',
                     boxSizing: 'border-box',
-                    marginTop: '5px'
+                    fontSize: '20px',
+                    position: 'absolute'
                 }}
-            />
+            ></textarea>
         </Editable>
     );
 };
 
-export default InputEditable;
+export default TextareaEditable;

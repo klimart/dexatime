@@ -1,4 +1,5 @@
 const Config = require('config');
+const logger = require('../model/logger');
 
 const InstallShema = (connection) => {
     let taskTableName = Config.get('taskTable.name');
@@ -36,7 +37,7 @@ const InstallShema = (connection) => {
 
         for (let row of stmt.iterate()) {
             if (row.name === startColumn) {
-                console.log('Start column exists');
+                logger.info('Start column exists');
 
                 return;
             }
@@ -45,7 +46,7 @@ const InstallShema = (connection) => {
         let addColumnQuery = `ALTER TABLE ${taskTableName} ADD COLUMN ${startColumn} INTEGER`;
         let statement = connection.prepare(addColumnQuery);
         statement.run();
-        console.log('Created start column');
+        logger.info('Created start column');
     }
 
     return {run};

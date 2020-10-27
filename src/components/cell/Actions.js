@@ -6,7 +6,7 @@ import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteConfirmationDialog from '@Client/components/DeleteConfirmation';
 
-const Actions = ({taskId, deleteTask}) => {
+const Actions = ({taskId, deleteTask, setIsDraggable}) => {
     const [isOpenDeleteConfirm, setOpenDeleteConfirm] = useState(false);
 
     const deleteTaskConfirmOpen = () => {
@@ -33,7 +33,11 @@ const Actions = ({taskId, deleteTask}) => {
                     deleteHandle={deleteTaskAction}
                     isOpen={isOpenDeleteConfirm} />
             <Tooltip title="Drag Up/Down" arrow>
-                <DragIndicatorIcon className="icon action-drag" fontSize="small" />
+                <div
+                    onMouseEnter={() => setIsDraggable(true)}
+                    onMouseLeave={() => setIsDraggable(false)}>
+                    <DragIndicatorIcon className="icon action-drag" fontSize="small" />
+                </div>
             </Tooltip>
         </div>
     );

@@ -20,6 +20,7 @@ const EditableTime = (props) => {
 
     let buttonTabCode = 9,
         buttonEnterCode = 13,
+        buttonCtrl = 17,
         buttonBackspaceCode = 8,
         buttonDeleteCode = 46,
         buttonHomeCode = 36,
@@ -39,7 +40,7 @@ const EditableTime = (props) => {
         navKeyCodes = [
             arrowLeft, arrowRight, arrowUp, arrowDown,
             buttonTabCode, buttonEnterCode, buttonHomeCode, buttonEndCode,
-            pageUp, pageDown, buttonShiftCode
+            pageUp, pageDown, buttonShiftCode, buttonCtrl
         ];
 
     const formatValueMatchMask = (value) => {
@@ -244,7 +245,7 @@ const EditableTime = (props) => {
                 onChange={e => {}}
                 onFocusCapture={e => {setCurrentValue(inputTime)}}
                 onBlur={handleFocusOut}
-                style={{maxWidth: inputWidth ? inputWidth : 'auto', width: '100%'}}
+                style={{maxWidth: inputWidth ? inputWidth : 'auto', boxSizing: 'border-box', width: '100%'}}
             />
         </Editable>
     );

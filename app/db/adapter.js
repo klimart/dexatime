@@ -3,6 +3,7 @@
 const Database = require('better-sqlite3');
 const Config = require('config');
 const InstallSchema = require('./install');
+const logger = require('../model/logger');
 
 class Adapter {
     connection;
@@ -19,11 +20,11 @@ class Adapter {
 
     initConnection() {
         try {
-            console.log('db connect');
+            logger.info('db connect')
             let dbName = Config.get('dbConfig.name');
             this.connection = new Database(dbName, {verbose: console.log});
         } catch (err) {
-            console.log(err.message);
+            logger.error(err.message);
             process.exit(1);
         }
     }

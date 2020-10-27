@@ -5,7 +5,7 @@ import Moment from 'react-moment';
 import classNames from 'classnames';
 import { changeTaskOrder, setActiveTask, updateTask } from '@Client/actions/task';
 import { timeFormatter } from '@Client/utils/timeFormatter';
-import InputEditable from '@Client/components/cell/InputEditable';
+import TextareaEditable from '@Client/components/cell/TextareaEditable';
 import Actions from '@Client/components/cell/Actions';
 import EditableTime from '@Client/components/cell/EditableTime';
 
@@ -29,7 +29,7 @@ const TaskRow = (props) => {
 
     const [descriptionText, setDescriptionText] = useState(description);
     const [isDragged, setIsDragged] = useState(false);
-    const [isDraggable, setIsDraggable] = useState(true);
+    const [isDraggable, setIsDraggable] = useState(false);
     const [currenClassName, setCurrentClassName] = useState('');
     const [inputTime, setInputTime] = useState(timeFormatter(time));
     const [newTimeValue, setNewTimeValue] = useState(null);
@@ -144,14 +144,16 @@ const TaskRow = (props) => {
             </td>}
             {!hiddenColumns.includes('description')
             && <td className="column-description">
-                <InputEditable
+                <TextareaEditable
                     content={descriptionText}
                     setContent={setDescriptionText}
                 />
             </td>}
             {!hiddenColumns.includes('actions')
             && <td className="column-actions">
-                <Actions taskId={id} />
+                <Actions
+                    taskId={id}
+                    setIsDraggable={setIsDraggable} />
             </td>}
         </tr>
     );

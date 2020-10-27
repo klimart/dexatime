@@ -4,14 +4,37 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server",
-    "electron": "electron ."
+    "electron": "electron .",
+    "build": "webpack",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
+  "build": {
+    "appId": "dexatime.test.1",
+    "productName": "DexaTimeTracker",
+    "linux": {
+      "category": "Development",
+      "description": "Dexa Time Tracker",
+
+      "target": [
+        "AppImage"
+      ]
+    },
+    "directories": {
+      "buildResources": "assets"
+    },
+    "fileAssociations": {
+      "ext": "png"
+    }
+  },
+  "postinstall": "electron-builder install-app-deps",
   "author": "Artem Klymov <art.klimoff@gmail.com>",
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.10.5",
     "babel-plugin-module-resolver": "^4.0.0",
     "css-loader": "^3.5.3",
     "electron": "~8.2.3",
+    "electron-builder": "^22.9.1",
     "electron-rebuild": "^1.11.0",
     "extract-loader": "2.0.1",
     "file-loader": "2.0.0",
