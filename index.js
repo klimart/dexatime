@@ -24,6 +24,10 @@ let mainWindow;
 app.allowRendererProcessReuse = false;
 app.on('ready', () => {
     mainWindow = new BrowserWindow({
+        width: 1000,
+        height: 600,
+        useContentSize: true,
+        icon: './icon.png',
         webPreferences: {
             nodeIntegration: true,
         },
@@ -45,7 +49,7 @@ ipcMain.on('task:new', () => {
 ipcMain.on('task:delete', (event, taskId) => {
     let result = deleteTask(taskId);
     logger.info('Delete Task', taskId);
-    mainWindow.webContents.send('task:deleted', result ? true : false);
+    mainWindow.webContents.send('task:deleted', !!result);
 });
 
 ipcMain.on('task:list:load', () => {
@@ -58,13 +62,13 @@ ipcMain.on('task:start', (event, taskId) => {
     logger.info('task start', taskId);
     let startResult = startTaskById(taskId);
     logger.info('task started', startResult);
-    mainWindow.webContents.send('task:started', startResult ? true : false);
+    mainWindow.webContents.send('task:started', !!startResult);
 });
 
 ipcMain.on('task:stop', (event, taskId) => {
     logger.info('task stop', taskId);
     let stopResult = stopTaskById(taskId);
-    mainWindow.webContents.send('task:stopped', stopResult ? true : false);
+    mainWindow.webContents.send('task:stopped', !!stopResult);
 });
 
 ipcMain.on('task:update', (event, taskData) => {

@@ -1,6 +1,6 @@
 {
   "name": "dexatime",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server",
@@ -12,19 +12,16 @@
   "build": {
     "appId": "dexatime.test.1",
     "productName": "DexaTimeTracker",
+    "mac": {
+      "icon": "./build/icon.png"
+    },
     "linux": {
       "category": "Development",
       "description": "Dexa Time Tracker",
-
+      "icon": "./build/icon.png",
       "target": [
         "AppImage"
       ]
-    },
-    "directories": {
-      "buildResources": "assets"
-    },
-    "fileAssociations": {
-      "ext": "png"
     }
   },
   "postinstall": "electron-builder install-app-deps",
