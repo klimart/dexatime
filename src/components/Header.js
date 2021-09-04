@@ -18,7 +18,7 @@ const Header = ({addTask, activeTask, activeTaskId, startTask, stopTask, inProgr
                 <div className="actions-before">
                     <Button
                         variant="outlined"
-                        color={inProgress ? 'primary' : 'disabled'}
+                        color={inProgress ? 'primary' : 'secondary'}
                         onClick={e => inProgress ? stopTask(activeTaskId) : startTask(activeTaskId)}>
                         {inProgress
                             ? <Tooltip title="Pause" arrow>
@@ -28,7 +28,7 @@ const Header = ({addTask, activeTask, activeTaskId, startTask, stopTask, inProgr
                             </Tooltip>
                             : <Tooltip title="Start" arrow>
                                 <PlayArrowIcon
-                                    color={activeTaskId ? 'primary' : 'disabled'}
+                                    color={activeTaskId ? 'primary' : 'secondary'}
                                     fontSize="large" />
                             </Tooltip>
                         }
@@ -46,8 +46,8 @@ const Header = ({addTask, activeTask, activeTaskId, startTask, stopTask, inProgr
                     <Tooltip title="Add New Task" arrow>
                         <Button
                             variant="outlined"
-                            color={inProgress ? 'disabled' : 'primary'}
-                            className={inProgress ? 'add-new-task disabled' : 'add-new-task'}
+                            color={inProgress ? 'secondary' : 'primary'}
+                            className={inProgress ? 'add-new-task secondary' : 'add-new-task'}
                             onClick={e => inProgress ? null : addTask()}
                             startIcon={<AddIcon />}>
                             New

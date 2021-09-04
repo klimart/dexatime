@@ -113,6 +113,9 @@ const TaskRow = (props) => {
     }, [time]);
 
     useEffect(() => {
+        if (!newTimeValue) {
+            return;
+        }
         updateTask({
             id,
             params: {

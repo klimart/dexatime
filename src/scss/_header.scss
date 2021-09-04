@@ -31,7 +31,7 @@
             line-height: 0;
         }
 
-        svg:not(.MuiSvgIcon-colorDisabled):hover {
+        svg:not(.MuiSvgIcon-colorSecondary):hover {
             color: $header-hover-color;
         }
     }
@@ -91,5 +91,19 @@
             cursor: pointer;
             color: $color-blue-san-marino;
         }
+    }
+
+    .MuiButton-outlinedSecondary {
+        color: $color-blue-san-marino;
+        border-color: $color-blue-san-marino;
+
+        &:hover {
+            border-color: $color-blue-san-marino;
+            background-color: rgba(17, 2, 249, 0.04);
+        }
+    }
+
+    .MuiSvgIcon-colorSecondary {
+        color: $color-blue-san-marino;
     }
 }
