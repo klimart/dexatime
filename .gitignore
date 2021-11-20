@@ -3,3 +3,5 @@ yarn-error.log
 dist
 .idea
 build
+log.txt
+tracker1

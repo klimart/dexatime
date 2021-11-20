@@ -32,14 +32,30 @@ const Editable = ({
         const keys = ['Escape', 'Tab'];
         const enterKey = 'Enter';
         const allKeys = [...keys, enterKey];
-        if (
-            (type === 'textarea' && keys.indexOf(key) > -1) ||
-            (type !== 'textarea' && allKeys.indexOf(key) > -1)
-        ) {
-            childRef.current.blur();
-            setEditing(false);
+
+        switch (true) {
+            case type === 'textarea' && keys.indexOf(key) > -1:
+            case type === 'textarea' && key === enterKey && !event.ctrlKey:
+            case type !== 'textarea' && allKeys.indexOf(key) > -1:
+                childRef.current.blur();
+                setEditing(false);
+                break;
         }
     };
+
+    const handleInputActive = () => {
+        setEditableHeight(editableRef.current.clientHeight);
+        isEditable && setEditing(true);
+    }
+
+    const prepareText = (text) => (
+        text.split("\n").map((item, idx) => (
+            <span key={idx}>
+                {item}
+                <br/>
+            </span>
+        ))
+    );
 
     return (
         isEditing ? (
@@ -60,11 +76,12 @@ const Editable = ({
         <div
             ref={editableRef}
             className={`editable-${type}`}
-            onClick={() => {setEditableHeight(editableRef.current.clientHeight); isEditable && setEditing(true);}}
+            onClick={handleInputActive}
             style={{padding: '5px'}}>
-            <span className={`${text ? 'text-regular' : 'text-placeholder'}`}>
-            {text || placeholder || ''}
-            </span>
+            <p className={`${text ? 'text-regular' : 'text-placeholder'}`}
+                style={{margin: 0}}>
+            {prepareText(text) || placeholder || ''}
+            </p>
         </div>)
     );
 };
