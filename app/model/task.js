@@ -1,6 +1,7 @@
 const Adapter = require('../db/adapter');
 const Config = require('config');
 const logger = require('./logger');
+const escapeQuote = require('../utils/escapeQuote');
 
 const TaskModel = () => {
     let connection = Adapter.getConnection();
@@ -192,13 +193,14 @@ const TaskModel = () => {
         }
 
         let hasChanges = taskParams.idx && (taskParams.idx !== savedTaskData.idx)
-            || ![null, undefined].includes(taskParams.description) && (taskParams.description !== savedTaskData.description)
-            || ![null, undefined].includes(taskParams.time) && (taskParams.time !== savedTaskData.time);
+            || Boolean(taskParams.description) && (taskParams.description !== savedTaskData.description)
+            || Boolean(taskParams.time) && (taskParams.time !== savedTaskData.time);
 
         if (hasChanges) {
             let taskIdx = taskParams.idx || savedTaskData.idx;
-            let taskDescription = ![null, undefined].includes(taskParams.description) ? taskParams.description : savedTaskData.description;
-            let updateTaskTime = ![null, undefined].includes(taskParams.time) ? taskParams.time : savedTaskData.time;
+            let taskDescription = Boolean(taskParams.description) ? taskParams.description : savedTaskData.description;
+            taskDescription = escapeQuote(taskDescription);
+            let updateTaskTime = Boolean(taskParams.time) ? taskParams.time : savedTaskData.time;
 
             let updateTaskQuery =
                 `UPDATE ${taskTableName}
