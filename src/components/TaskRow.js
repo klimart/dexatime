@@ -8,7 +8,7 @@ import { timeFormatter } from '@Client/utils/timeFormatter';
 import TextareaEditable from '@Client/components/cell/TextareaEditable';
 import Actions from '@Client/components/cell/Actions';
 import EditableTime from '@Client/components/cell/EditableTime';
-import render from '@Client/utils/renderer';
+import restoreQuotes from '@Client/utils/restoreQuotes';
 
 /**
  * Task item - grid row
@@ -28,7 +28,7 @@ const TaskRow = (props) => {
     let {id, idx, date, time, description} = data;
     let {dndIndex, sedDndIndex, dndOverIndex, setDndOverIndex} = dndIdx;
 
-    description = render(description);
+    description = restoreQuotes(description);
     const [descriptionText, setDescriptionText] = useState(description);
     const [isDragged, setIsDragged] = useState(false);
     const [isDraggable, setIsDraggable] = useState(false);
