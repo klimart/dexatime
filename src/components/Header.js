@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import PauseIcon from '@material-ui/icons/Pause';
@@ -6,11 +6,49 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import AddIcon from '@material-ui/icons/Add';
 import Tooltip from '@material-ui/core/Tooltip';
 import Button from '@material-ui/core/Button';
-import { addTask, startTask, stopTask } from '@Client/actions/task';
+import { addTask, startTask, stopTask, updateTask } from '@Client/actions/task';
 import { timeFormatter } from '@Client/utils/timeFormatter';
+import render from '@Client/utils/renderer';
 
-const Header = ({addTask, activeTask, activeTaskId, startTask, stopTask, inProgress}) => {
-    let {id, idx, date, time, description} = activeTask;
+const Header = ({addTask, tasks, activeTaskId, startTask, stopTask, inProgress, updateTask}) => {
+    const getActiveTask = () => {
+        const runningTask = tasks.find((task) => (
+            parseInt(task.id) === activeTaskId
+        ));
+
+        return runningTask ? runningTask : {};
+    };
+
+    const getDescription = () => {
+        const activeTask = getActiveTask();
+        return activeTask.description;
+    }
+
+    const getTime = () => {
+        const activeTask = getActiveTask();
+        return timeFormatter(activeTask.time);
+    }
+
+    const updateActiveTaskAction = () => (
+        updateTask({
+            id: activeTaskId,
+            params: {}
+        })
+    );
+
+    useEffect(() => {
+        let interval = null;
+        if (inProgress && activeTaskId) {
+            updateActiveTaskAction();
+            interval = setInterval(() => {
+                updateActiveTaskAction()
+            }, 250);
+        } else {
+            clearInterval(interval);
+        }
+
+        return () => clearInterval(interval);
+    }, [inProgress, activeTaskId]);
 
     return (
         <div className="header-wrapper">
@@ -36,10 +74,10 @@ const Header = ({addTask, activeTask, activeTaskId, startTask, stopTask, inProgr
                 </div>
                 <div className="active-task">
                     <div className="active-time">
-                        <span>{timeFormatter(time)}</span>
+                        <span>{getTime()}</span>
                     </div>
                     <div className="active-description">
-                        <span>{description}</span>
+                        <span>{render(getDescription())}</span>
                     </div>
                 </div>
                 <div className="actions-after">
@@ -60,25 +98,18 @@ const Header = ({addTask, activeTask, activeTaskId, startTask, stopTask, inProgr
 };
 
 Header.propTypes = {
-    activeTask: PropTypes.object.isRequired,
+    tasks: PropTypes.array.isRequired,
+    inProgress: PropTypes.bool.isRequired,
+    activeTaskId: PropTypes.number.isRequired,
     addTask: PropTypes.func.isRequired,
     startTask: PropTypes.func.isRequired,
     stopTask: PropTypes.func.isRequired
 }
 
-const mapStateToProps = state => {
-    let activeTask = state.task.tasks.find(
-        (task) => (parseInt(task.id) === parseInt(state.task.activeTaskId))
-    );
+const mapStateToProps = state => ({
+    tasks: state.task.tasks,
+    activeTaskId: parseInt(state.task.activeTaskId),
+    inProgress: Boolean(state.task.inProgress)
+});
 
-    // Active task is not set
-    activeTask = activeTask ? activeTask : {};
-
-    return {
-        activeTask,
-        activeTaskId: parseInt(state.task.activeTaskId),
-        inProgress: state.task.inProgress
-    };
-};
-
-export default connect(mapStateToProps, { addTask, startTask, stopTask })(Header);
+export default connect(mapStateToProps, { addTask, startTask, stopTask, updateTask })(Header);

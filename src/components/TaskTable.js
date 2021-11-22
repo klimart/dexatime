@@ -2,7 +2,6 @@ import React, { useState, useEffect, Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import TaskRows from '@Client/components/TaskRows';
-import HeartBeat from '@Client/services/HeartBeat';
 import { selectLastTask } from '@Client/actions/task';
 
 const TaskTable = ({ activeTaskId, tasks, selectLastTask }) => {
@@ -18,7 +17,6 @@ const TaskTable = ({ activeTaskId, tasks, selectLastTask }) => {
 
     return (
         <Fragment>
-            <HeartBeat />
             <table className="tasks-list">
                 <thead>
                     <tr>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import render from '@Client/utils/renderer';
 
 const Editable = ({
     text,
@@ -48,15 +49,6 @@ const Editable = ({
         isEditable && setEditing(true);
     }
 
-    const prepareText = (text) => (
-        text.split("\n").map((item, idx) => (
-            <span key={idx}>
-                {item}
-                <br/>
-            </span>
-        ))
-    );
-
     return (
         isEditing ? (
         <div
@@ -80,7 +72,7 @@ const Editable = ({
             style={{padding: '5px'}}>
             <p className={`${text ? 'text-regular' : 'text-placeholder'}`}
                 style={{margin: 0}}>
-            {prepareText(text) || placeholder || ''}
+            {render(text) || placeholder || ''}
             </p>
         </div>)
     );

@@ -62,7 +62,7 @@ const TextareaEditable = (props) => {
                 value={currectContent}
                 onChange={e => setCurrectContent(e.target.value)}
                 onKeyDown={handleKeyPress}
-                onBlur={e => setContent(currectContent.trim())}
+                onBlur={e => setContent(currectContent)}
                 style={{
                     maxWidth: inputWidth,
                     width: '100%',

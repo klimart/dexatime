@@ -93,7 +93,6 @@ export const updateTask = (data) => dispatch => {
     // ToDo Process task data update.
     ipcRenderer.send('task:update', data);
     ipcRenderer.once('task:updated', (event, taskData) => {
-        console.log('data after update', taskData);
         dispatch({
             type: UPDATE_TASK,
             payload: {

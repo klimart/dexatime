@@ -4,5 +4,9 @@
     },
     "taskTable": {
         "name": "task1"
+    },
+    "log": {
+        "file": false,
+        "console": false
     }
 }
