@@ -7,12 +7,11 @@ import Header from '@Client/components/Header';
 import Sidebar from '@Client/components/Sidebar';
 import TaskTable from '@Client/components/TaskTable';
 import ClientForm from '@Client/components/ClientForm';
-
-import { loadTasks } from '@Client/actions/task';
+import { loadTasksPartList } from '@Client/actions/task';
 
 const App = () => {
     useEffect(() => {
-        store.dispatch(loadTasks());
+        store.dispatch(loadTasksPartList());
     }, []);
 
     return (

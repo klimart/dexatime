@@ -2,6 +2,7 @@ export const ADD_TASK = 'ADD_TASK';
 export const CHANGE_TASK_ORDER = 'CHANGE_TASK_ORDER';
 export const DELETE_TASK = 'DELETE_TASK';
 export const LOAD_TASK_LIST = 'LOAD_TASK_LIST';
+export const LOAD_PART_TASK_LIST = 'LOAD_PART_TASK_LIST';
 export const SELECT_LAST_TASK = 'SELECT_LAST_TASK';
 export const REMOVE_ALERT = 'REMOVE_ALERT';
 export const SET_ALERT = 'SET_ALERT';

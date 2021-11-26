@@ -5,6 +5,7 @@ import {
     CHANGE_TASK_ORDER,
     DELETE_TASK,
     LOAD_TASK_LIST,
+    LOAD_PART_TASK_LIST,
     SELECT_LAST_TASK,
     SET_ACTIVE_TASK,
     START_TASK,
@@ -49,6 +50,17 @@ export const loadTasks = () => dispatch => {
             payload: taskList
         });
     });
+};
+
+export const loadTasksPartList = (offset = 0, limit = 30) => dispatch => {
+    // Load initial Tasks List Request to Electron
+   ipcRenderer.send('task:part-list:load', {offset, limit});
+   ipcRenderer.on('task:part-list:loaded', (event, taskList) => {
+       dispatch({
+           type: LOAD_PART_TASK_LIST,
+           payload: taskList
+       });
+   });
 };
 
 export const selectLastTask = () => dispatch => {

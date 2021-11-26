@@ -7,6 +7,6 @@
     },
     "log": {
         "file": false,
-        "console": false
+        "console": true
     }
 }

@@ -3,6 +3,7 @@ import {
     CHANGE_TASK_ORDER,
     DELETE_TASK,
     LOAD_TASK_LIST,
+    LOAD_PART_TASK_LIST,
     SELECT_LAST_TASK,
     SET_ACTIVE_TASK,
     START_TASK,
@@ -87,6 +88,12 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 tasks: payload
+            };
+
+        case LOAD_PART_TASK_LIST:
+            return {
+                ...state,
+                tasks: [...state.tasks, ...payload]
             };
 
         case SELECT_LAST_TASK:

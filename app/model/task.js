@@ -125,6 +125,23 @@ const TaskModel = () => {
         return taskList;
     }
 
+    const getPartTasksList = (offset = 0, limit = 30) => {
+        let getTasksQuery = `
+            SELECT * FROM ${taskTableName}
+            ORDER BY idx ASC
+            LIMIT ${offset}, ${limit}`;
+        let getTasksStmt = connection.prepare(getTasksQuery);
+
+        let taskList;
+        try {
+            taskList = getTasksStmt.all();
+        } catch (error) {
+            taskList = [];
+        }
+
+        return taskList;
+    }
+
     let startTaskById = (taskId) => {
         let newDate = Date.now();
         let startTaskQuery =
@@ -246,6 +263,7 @@ const TaskModel = () => {
         changeTasksOrder,
         deleteTask,
         getTasksList,
+        getPartTasksList,
         startTaskById,
         stopTaskById,
         updateTask
