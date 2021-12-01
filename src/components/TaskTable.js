@@ -1,13 +1,27 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment, useRef } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import TaskRows from '@Client/components/TaskRows';
-import { selectLastTask } from '@Client/actions/task';
+import { selectLastTask, loadTasksPartList } from '@Client/actions/task';
 
-const TaskTable = ({ activeTaskId, tasks, selectLastTask }) => {
+const TaskTable = (props) => {
+    const {
+        activeTaskId,
+        tasks,
+        selectLastTask,
+        totalTasksCount,
+        loadTasksPartList,
+        tasksLoading
+    } = props;
     const [dndIndex, sedDndIndex] = useState(null);
     const [dndOverIndex, setDndOverIndex] = useState(null);
+    const [lazyLoadTasks, setLazyLoadTasks] = useState(false);
+    const [lazyLoadedOffsets, setLazyLoadedOffsets] = useState([]);
+
     const hiddenColumns = ['idx', 'id'];
+    const tableRef = useRef(null);
+
+    const getTasksCount = () => tasks.length;
 
     useEffect(() => {
         if (!activeTaskId) {
@@ -15,9 +29,54 @@ const TaskTable = ({ activeTaskId, tasks, selectLastTask }) => {
         }
     }, [activeTaskId]);
 
+    useEffect(() => {
+        const tableEl = tableRef.current;
+        const tableHeight = tableEl.offsetHeight;
+        const windowHeight = window.innerHeight;
+        const needTasksLoad = getTasksCount() < totalTasksCount;
+        if (!needTasksLoad) {
+            return;
+        }
+
+        const handleWindowScroll = () => {
+            //offsetTop + offsetHeight = window.scrollY + window.innerHeight
+            let tableToTop = tableEl.offsetTop;
+            let windowScroll = window.scrollY;
+
+            let tableBottom = tableToTop + tableHeight;
+            const screensToPreloadData = 3;
+            // Start tasks loading 1 window prior to scroll to bottom left.
+            let scrollReachingTableEnd = tableBottom - windowScroll < screensToPreloadData * windowHeight;
+
+            if (scrollReachingTableEnd && !tasksLoading) {
+                console.log('!!!Start tasks lazy load');
+                setLazyLoadTasks(true);
+            }
+        };
+
+        window.addEventListener('scroll', handleWindowScroll);
+
+        return () => window.removeEventListener('scroll', handleWindowScroll);
+    }, [tasks, totalTasksCount, tasksLoading]);
+
+    useEffect(() => {
+        setLazyLoadTasks(false);
+        if (!lazyLoadTasks || tasksLoading) {
+            return;
+        }
+
+        let tasksCount = getTasksCount();
+        if (lazyLoadedOffsets.includes(tasksCount)) {
+            return;
+        }
+
+        loadTasksPartList(tasksCount);
+        setLazyLoadedOffsets(offsets => [...offsets, tasksCount]);
+    }, [lazyLoadTasks]);
+
     return (
         <Fragment>
-            <table className="tasks-list">
+            <table className="tasks-list" ref={tableRef}>
                 <thead>
                     <tr>
                         {!hiddenColumns.includes('id') && <th className="column-id">id</th>}
@@ -38,6 +97,7 @@ const TaskTable = ({ activeTaskId, tasks, selectLastTask }) => {
                         hiddenColumns={hiddenColumns} />
                 </tbody>
             </table>
+            {tasksLoading && <div><span>Loading...</span></div>}
         </Fragment>
     );
 };
@@ -45,7 +105,10 @@ const TaskTable = ({ activeTaskId, tasks, selectLastTask }) => {
 TaskTable.propTypes = {
     activeTaskId: PropTypes.number,
     tasks: PropTypes.array.isRequired,
-    selectLastTask: PropTypes.func.isRequired
+    selectLastTask: PropTypes.func.isRequired,
+    loadTasksPartList: PropTypes.func.isRequired,
+    totalTasksCount: PropTypes.number.isRequired,
+    tasksLoading: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
@@ -62,10 +125,12 @@ const mapStateToProps = state => ({
                 return a.idx > b.idx ? 1 : -1;
         }
 
-    })
+    }),
+    totalTasksCount: state.task.totalTasksCount,
+    tasksLoading: state.task.tasksLoading
 });
 
 export default connect(
     mapStateToProps,
-    {selectLastTask}
+    {selectLastTask, loadTasksPartList}
 )(TaskTable);

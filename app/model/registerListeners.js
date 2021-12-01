@@ -8,6 +8,7 @@ const registerListeners = (mainWindow) => {
         changeTasksOrder,
         deleteTask,
         getTasksList,
+        getTasksListCount,
         getPartTasksList,
         startTaskById,
         stopTaskById,
@@ -30,6 +31,12 @@ const registerListeners = (mainWindow) => {
         let tasksList = getPartTasksList(offset, limit);
         logger.info('loadPartTaskList', tasksList);
         mainWindow.webContents.send('task:part-list:loaded', tasksList);
+    });
+
+    ipcMain.on('task:list:count', () => {
+        let tasksCount = getTasksListCount();
+        logger.info('tasksCount', tasksCount);
+        mainWindow.webContents.send('task:list:counted', tasksCount);
     });
 
     ipcMain.on('task:list:load', () => {

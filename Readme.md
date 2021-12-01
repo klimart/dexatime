@@ -19,6 +19,8 @@ Production mode
 * Start local dev environment - electron (backend) + webpack (for react.js)
 ```
 npm run dev
+or
+yarn run dev
 ```
 * Reload fronent after changes with Ctrl+R
 

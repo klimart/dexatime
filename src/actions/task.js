@@ -4,12 +4,14 @@ import {
     ADD_TASK,
     CHANGE_TASK_ORDER,
     DELETE_TASK,
+    GET_ALL_TASKS_COUNT,
     LOAD_TASK_LIST,
     LOAD_PART_TASK_LIST,
     SELECT_LAST_TASK,
     SET_ACTIVE_TASK,
     START_TASK,
     STOP_TASK,
+    TASKS_LOADING,
     UPDATE_TASK
  } from './types';
 
@@ -20,6 +22,8 @@ export const addTask = () => dispatch => {
             type: ADD_TASK,
             payload: newTask
         });
+
+        dispatch(getAllTasksCount());
     });
 };
 
@@ -38,6 +42,8 @@ export const deleteTask = (taskId) => dispatch => {
                 }
             });
         }
+
+        dispatch(getAllTasksCount());
     });
 };
 
@@ -49,18 +55,41 @@ export const loadTasks = () => dispatch => {
             type: LOAD_TASK_LIST,
             payload: taskList
         });
+
+        dispatch(getAllTasksCount());
     });
 };
 
 export const loadTasksPartList = (offset = 0, limit = 30) => dispatch => {
+    dispatch(setTasksLoading(true));
     // Load initial Tasks List Request to Electron
-   ipcRenderer.send('task:part-list:load', {offset, limit});
-   ipcRenderer.on('task:part-list:loaded', (event, taskList) => {
-       dispatch({
-           type: LOAD_PART_TASK_LIST,
-           payload: taskList
-       });
-   });
+    ipcRenderer.send('task:part-list:load', {offset, limit});
+    ipcRenderer.once('task:part-list:loaded', (event, taskList) => {
+        dispatch({
+            type: LOAD_PART_TASK_LIST,
+            payload: taskList
+        });
+
+        dispatch(getAllTasksCount());
+        dispatch(setTasksLoading(false));
+    });
+};
+
+export const getAllTasksCount = () => dispatch => {
+    ipcRenderer.send('task:list:count');
+    ipcRenderer.on('task:list:counted', (event, tasksCount) => {
+        dispatch({
+            type: GET_ALL_TASKS_COUNT,
+            payload: tasksCount
+        });
+    });
+};
+
+export const setTasksLoading = (isLoading) => dispatch => {
+    dispatch({
+        type: TASKS_LOADING,
+        payload: isLoading
+    });
 };
 
 export const selectLastTask = () => dispatch => {

@@ -125,6 +125,21 @@ const TaskModel = () => {
         return taskList;
     }
 
+    const getTasksListCount = () => {
+        const getTasksCountQuery = `SELECT count(*) as count FROM ${taskTableName}`;
+        const getTasksStmt = connection.prepare(getTasksCountQuery);
+
+        let taskCount;
+        try {
+            taskCount = getTasksStmt.get().count;
+        } catch (error) {
+            logger.error('Get tasks count list error: ', error.message);
+            taskCount = null;
+        }
+
+        return taskCount;
+    }
+
     const getPartTasksList = (offset = 0, limit = 30) => {
         let getTasksQuery = `
             SELECT * FROM ${taskTableName}
@@ -263,6 +278,7 @@ const TaskModel = () => {
         changeTasksOrder,
         deleteTask,
         getTasksList,
+        getTasksListCount,
         getPartTasksList,
         startTaskById,
         stopTaskById,

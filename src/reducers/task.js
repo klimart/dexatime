@@ -2,12 +2,14 @@ import {
     ADD_TASK,
     CHANGE_TASK_ORDER,
     DELETE_TASK,
+    GET_ALL_TASKS_COUNT,
     LOAD_TASK_LIST,
     LOAD_PART_TASK_LIST,
     SELECT_LAST_TASK,
     SET_ACTIVE_TASK,
     START_TASK,
     STOP_TASK,
+    TASKS_LOADING,
     UPDATE_TASK
  } from '@Client/actions/types';
 
@@ -18,7 +20,9 @@ const initialState = {
         field: 'idx',
         direction: 'desc'
     },
-    tasks: []
+    tasks: [],
+    totalTasksCount: 0,
+    tasksLoading: false
 };
 
 // Task items fields
@@ -96,6 +100,12 @@ export default (state = initialState, action) => {
                 tasks: [...state.tasks, ...payload]
             };
 
+        case GET_ALL_TASKS_COUNT:
+            return {
+                ...state,
+                totalTasksCount: parseInt(payload)
+            }
+
         case SELECT_LAST_TASK:
             let lastTaskIdx = getMaxField(state.tasks, 'idx');
 
@@ -136,6 +146,12 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 inProgress: false
+            };
+
+        case TASKS_LOADING:
+            return {
+                ...state,
+                tasksLoading: payload
             };
 
         case UPDATE_TASK:
