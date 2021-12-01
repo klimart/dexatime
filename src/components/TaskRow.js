@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, memo } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Moment from 'react-moment';
@@ -15,7 +15,7 @@ import restoreQuotes from '@Client/utils/restoreQuotes';
  */
 const TaskRow = (props) => {
     let {
-        activeTaskId,
+        isActive,
         inProgress,
         setActiveTask,
         data,
@@ -80,11 +80,11 @@ const TaskRow = (props) => {
             }
         }
 
-        let activeClass = parseInt(activeTaskId) === parseInt(id) ? 'is-active' : '';
+        let activeClass = isActive ? 'is-active' : '';
 
         setCurrentClassName(classNames(dragOverClass, activeClass));
 
-    }, [dndOverIndex, activeTaskId]);
+    }, [dndOverIndex, isActive]);
 
     useEffect(() => {
         if (isDragged) {
@@ -165,7 +165,7 @@ const TaskRow = (props) => {
 };
 
 TaskRow.propTypes = {
-    activeTaskId: PropTypes.number || null,
+    isActive: PropTypes.bool.isRequired,
     changeTaskOrder: PropTypes.func.isRequired,
     setActiveTask: PropTypes.func.isRequired,
     sort: PropTypes.object.isRequired,
@@ -174,16 +174,17 @@ TaskRow.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    activeTaskId: state.task.activeTaskId,
     inProgress: state.task.inProgress,
     sort: state.task.sort
 });
 
-export default connect(
+export default memo(
+    connect(
     mapStateToProps,
     {
         changeTaskOrder,
         setActiveTask,
         updateTask
     }
-)(TaskRow);
+    )(TaskRow)
+);

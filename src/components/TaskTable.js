@@ -49,7 +49,6 @@ const TaskTable = (props) => {
             let scrollReachingTableEnd = tableBottom - windowScroll < screensToPreloadData * windowHeight;
 
             if (scrollReachingTableEnd && !tasksLoading) {
-                console.log('!!!Start tasks lazy load');
                 setLazyLoadTasks(true);
             }
         };

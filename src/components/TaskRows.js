@@ -1,23 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TaskRow from '@Client/components/TaskRow';
+import { connect } from 'react-redux';
 
-const TaskRows = ({
-    tasks,
-    dndIndex,
-    sedDndIndex,
-    dndOverIndex,
-    setDndOverIndex,
-    hiddenColumns
-}) => tasks.map(task => {
+const TaskRows = (props) => {
+    const {
+        tasks,
+        dndIndex,
+        sedDndIndex,
+        dndOverIndex,
+        setDndOverIndex,
+        hiddenColumns,
+        activeTaskId
+    } = props;
+
     return (
-        <TaskRow
-            key={task.id}
-            data={task}
-            dndIdx={{dndIndex, sedDndIndex, dndOverIndex, setDndOverIndex}}
-            hiddenColumns={hiddenColumns} />
-    )
-});
+        tasks.map(task => (
+            <TaskRow
+                key={task.id}
+                data={task}
+                dndIdx={{dndIndex, sedDndIndex, dndOverIndex, setDndOverIndex}}
+                hiddenColumns={hiddenColumns}
+                isActive={parseInt(activeTaskId) === parseInt(task.id)} />
+        ))
+    );
+};
 
 TaskRows.propTypes = {
     tasks: PropTypes.array,
@@ -25,7 +32,12 @@ TaskRows.propTypes = {
     sedDndIndex: PropTypes.func,
     dndOverIndex: PropTypes.number,
     setDndOverIndex: PropTypes.func,
-    hiddenColumns: PropTypes.array
+    hiddenColumns: PropTypes.array,
+    activeTaskId: PropTypes.number || null,
 };
 
-export default TaskRows;
+const mapStateToProps = state => ({
+    activeTaskId: state.task.activeTaskId
+});
+
+export default connect(mapStateToProps, null)(TaskRows);
