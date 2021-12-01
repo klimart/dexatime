@@ -1,6 +1,6 @@
 {
   "name": "dexatime",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "index.js",
   "scripts": {
     "dev": "npm-run-all --print-label --parallel dev:*",
@@ -12,7 +12,7 @@
   },
   "build": {
     "appId": "dexatime.test.1",
-    "productName": "DexaTimeTracker",
+    "productName": "MonoTracker",
     "mac": {
       "icon": "./build/icon.png"
     },

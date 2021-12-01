@@ -143,7 +143,7 @@ const TaskModel = () => {
     const getPartTasksList = (offset = 0, limit = 30) => {
         let getTasksQuery = `
             SELECT * FROM ${taskTableName}
-            ORDER BY idx ASC
+            ORDER BY idx DESC
             LIMIT ${offset}, ${limit}`;
         let getTasksStmt = connection.prepare(getTasksQuery);
 

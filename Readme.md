@@ -1,6 +1,6 @@
 ## Development Essentials
 
-#### Production mode control in index.html
+* ### Production mode control in index.html
 
 Development mode
 ```
@@ -28,3 +28,11 @@ yarn run dev
 NODE_MODULE_VERSION 72. This version of Node.js requires NODE_MODULE_VERSION 73. Please try re-compiling or re-installing \\/
 * Every time you run "npm install", run this:
 ./node_modules/.bin/electron-rebuild
+
+* To Create AppImage
+1. Set version in package.json
+2. Change src/index.html to support production mode
+3. Adjust productName if needed in package.json
+4. Update build assets. Run ```npm run build```
+4. Generate AppImage distribution. Run ```npm run dist```
+5. Grep generated .AppImage file in /dist directory
