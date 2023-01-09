@@ -10,7 +10,8 @@ const Adapter = require('./app/db/adapter');
 const { app, BrowserWindow, Menu } = electron;
 
 app.allowRendererProcessReuse = false;
-app.on('ready', () => {
+
+const createWindow = () => {
     const mainWindow = new BrowserWindow({
         width: 1000,
         height: 600,
@@ -18,14 +19,28 @@ app.on('ready', () => {
         icon: './icon.png',
         webPreferences: {
             nodeIntegration: true,
+            contextIsolation: false
         },
-    });
-    mainWindow.loadURL(`file://${__dirname}/src/index.html`);
+    })
+
+    mainWindow.loadFile(`./src/index.html`);
 
     const mainMenu = Menu.buildFromTemplate(menuTemplate);
 
     const registerListeners = require('./app/model/registerListeners');
     registerListeners(mainWindow);
+}
+
+app.whenReady().then(() => {
+    createWindow();
+
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    })
 });
 
 const menuTemplate = [];
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit()
+})

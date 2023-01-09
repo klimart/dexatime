@@ -1,4 +1,3 @@
-var webpack = require('webpack');
 var path = require('path');
 var fs = require('fs');
 
@@ -12,11 +11,12 @@ fs.readdirSync('node_modules')
   });
 
 module.exports = {
+  mode: 'development',
   externals: nodeModules,
   entry: [
     './src/index.js', './src/scss/main.scss'
   ],
-  target: 'node',
+  target: 'electron-renderer',
   output: {
     filename: 'bundle.js',
         path: path.resolve(__dirname, 'src/build'),
@@ -26,14 +26,13 @@ module.exports = {
     rules: [
       {
           test: /\.js?$/,
-          loader: 'babel-loader',
-          exclude: '/node_modules/',
-          options: {
-              presets: [
-                  'react', 'stage-0', ['env', {
-                      target: { browsers: ['last 2 versions']}
-                  }]
-              ]
+          exclude: /node_modules/,
+          use: {
+              loader: 'babel-loader',
+              options: {
+                  presets: ['@babel/preset-env', '@babel/preset-react'],
+                  plugins: ['@babel/plugin-transform-runtime', 'babel-plugin-module-resolver']
+              }
           }
       },
       {
@@ -69,15 +68,6 @@ module.exports = {
            ]
         }
     ],
-    loaders: [
-      {
-        exclude: /node_modules/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['react', 'es2015', 'stage-1']
-        }
-      },
-    ]
   },
   resolve: {
     extensions: ['.js', '.jsx'],
@@ -87,7 +77,6 @@ module.exports = {
   },
   devServer: {
     historyApiFallback: true,
-    contentBase: './',
     port: 4172
-  }
+  },
 };

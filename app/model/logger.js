@@ -11,8 +11,8 @@ const writeToFile = (text, data) => {
     });
 };
 
-const allowFileLog = Boolean(Config.log.file);
-const allowConsoleLog = Boolean(Config.log.console);
+const allowFileLog = Boolean(Config.get('log.file'));
+const allowConsoleLog = Boolean(Config.get('log.console'));
 
 const logger = {
     error: (message, data) => {
