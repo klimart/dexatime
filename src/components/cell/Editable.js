@@ -36,7 +36,7 @@ const Editable = ({
 
         switch (true) {
             case type === 'textarea' && keys.indexOf(key) > -1:
-            case type === 'textarea' && key === enterKey && !event.ctrlKey:
+            case type === 'textarea' && key === enterKey && !(event.ctrlKey || event.shiftKey):
             case type !== 'textarea' && allKeys.indexOf(key) > -1:
                 childRef.current.blur();
                 setEditing(false);
@@ -59,7 +59,6 @@ const Editable = ({
                 padding: 0,
                 boxSizing: 'border-box',
                 height: '100%',
-                padding: '0',
                 position: 'relative'
             }}>
             {children}

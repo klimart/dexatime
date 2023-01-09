@@ -8,11 +8,11 @@ const TextareaEditable = (props) => {
     const [updateCursorPosition, setUpdateCursorPosition] = useState(null);
 
     let {content = emptyContentText, setContent, name = ''} = props;
-    const [currectContent, setCurrectContent] = useState(content);
+    const [currentContent, setCurrentContent] = useState(content);
 
     const handleKeyPress = (e) => {
         const enterCode = 13;
-        if (e.keyCode === enterCode && e.ctrlKey) {
+        if (e.keyCode === enterCode && (e.ctrlKey || e.shiftKey)) {
             processPressCrtlEnter();
         }
     };
@@ -31,10 +31,10 @@ const TextareaEditable = (props) => {
     };
 
     const addSymbolToPosition = (symbol, position) => {
-        let newContent = currectContent.substring(0, position)
+        let newContent = currentContent.substring(0, position)
             + symbol
-            + currectContent.substring(position);
-        setCurrectContent(newContent);
+            + currentContent.substring(position);
+        setCurrentContent(newContent);
     };
 
     // Control cursor position after press Ctrl+Enter.
@@ -45,7 +45,7 @@ const TextareaEditable = (props) => {
 
         setCursorPosition(updateCursorPosition);
         setUpdateCursorPosition(null);
-    }, [currectContent]);
+    }, [currentContent]);
 
     return (
         <Editable
@@ -58,15 +58,15 @@ const TextareaEditable = (props) => {
                 ref={inputRef}
                 name={name}
                 className=""
-                placeholder={currectContent}
-                value={currectContent}
-                onChange={e => setCurrectContent(e.target.value)}
+                placeholder={currentContent}
+                value={currentContent}
+                onChange={e => setCurrentContent(e.target.value)}
                 onKeyDown={handleKeyPress}
-                onBlur={e => setContent(currectContent.trim())}
+                onBlur={e => setContent(currentContent.trim())}
                 style={{
                     maxWidth: inputWidth,
                     width: '100%',
-                    height: '100%',
+                    height: '200%',
                     boxSizing: 'border-box',
                     fontSize: '20px',
                     position: 'absolute'
