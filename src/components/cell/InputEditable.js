@@ -8,7 +8,7 @@ const InputEditable = (props) => {
 
 
     let {content = emptyContentText, setContent, name = ''} = props;
-    const [currectContent, setCurrectContent] = useState(content);
+    const [currentContent, setCurrentContent] = useState(content);
 
     return (
         <Editable
@@ -22,10 +22,10 @@ const InputEditable = (props) => {
                 type='text'
                 name={name}
                 className=''
-                placeholder={currectContent}
-                value={currectContent}
-                onChange={e => setCurrectContent(e.target.value)}
-                onBlur={e => setContent(currectContent)}
+                placeholder={currentContent}
+                value={currentContent}
+                onChange={e => setCurrentContent(e.target.value)}
+                onBlur={e => setContent(currentContent)}
                 style={{
                     maxWidth: inputWidth,
                     width: '100%',

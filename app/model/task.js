@@ -226,18 +226,18 @@ const TaskModel = () => {
 
         let hasChanges = taskParams.idx && (taskParams.idx !== savedTaskData.idx)
             || Boolean(taskParams.description) && (taskParams.description !== savedTaskData.description)
-            || Boolean(taskParams.time) && (taskParams.time !== savedTaskData.time);
+            || Number.isInteger(taskParams.time) && taskParams.time !== savedTaskData.time;
 
         if (hasChanges) {
             let taskIdx = taskParams.idx || savedTaskData.idx;
             let taskDescription = Boolean(taskParams.description) ? taskParams.description : savedTaskData.description;
             taskDescription = escapeQuote(taskDescription);
-            let updateTaskTime = Boolean(taskParams.time) ? taskParams.time : savedTaskData.time;
+            let updateTaskTime = Number.isInteger(taskParams.time) ? taskParams.time : savedTaskData.time;
 
             let updateTaskQuery =
                 `UPDATE ${taskTableName}
                     SET idx=${taskIdx}, description='${taskDescription}', time=${updateTaskTime}
-                WHERE id=${taskId}`;
+                  WHERE id=${taskId}`;
             logger.info('Update task query', updateTaskQuery);
             let updateTaskStmt = connection.prepare(updateTaskQuery);
 

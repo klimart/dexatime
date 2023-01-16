@@ -31,7 +31,9 @@ yarn run dev
 ### Troubleshooting
 * Error:
 > NODE_MODULE_VERSION 72. This version of Node.js requires NODE_MODULE_VERSION 73. Please try re-compiling or re-installing \\/
-   
+
 Every time you run "npm install", run this:
 > ./node_modules/.bin/electron-rebuild
-> 
+>
+
+[Change Log](./Changelog.md)

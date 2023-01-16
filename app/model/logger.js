@@ -1,7 +1,7 @@
 const fs = require('fs');
 const filePath = './log.txt';
 const os = require('os');
-const Config = require('config');
+const config = require('config');
 
 const writeToFile = (text, data) => {
     fs.open(filePath, 'a', 0777, (e, id) => {
@@ -11,8 +11,10 @@ const writeToFile = (text, data) => {
     });
 };
 
-const allowFileLog = Boolean(Config.get('log.file'));
-const allowConsoleLog = Boolean(Config.get('log.console'));
+
+const allowFileLog = config.has('log.file') ? Boolean(config.get('log.file')) : false;
+const allowConsoleLog = config.has('log.console') ? Boolean(config.get('log.console')): false;
+
 
 const logger = {
     error: (message, data) => {
