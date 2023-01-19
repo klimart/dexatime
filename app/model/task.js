@@ -14,11 +14,25 @@ const TaskModel = () => {
     //     {id: 3, idx: 3, date: '1595538399385', time: 300, description: 'task 3 description', start: ''}
     // ];
 
-    let addNewTask = () => {
-        // Prepare new task index
+    const getLatestTaskIdx = () => {
         let maxIdxQuery = `SELECT MAX(idx) FROM ${taskTableName}`;
         let maxIdxStmt = connection.prepare(maxIdxQuery);
-        let maxIdx = maxIdxStmt.pluck().get();
+
+        return maxIdxStmt.pluck().get();
+    };
+
+    const getLastTaskId = () => {
+        let maxIdx = getLatestTaskIdx();
+        let getTaskQuery = `SELECT * FROM ${taskTableName} WHERE idx=${maxIdx}`;
+        let getTaskStmt = connection.prepare(getTaskQuery);
+        let task = getTaskStmt.get();
+
+        return task.id;
+    };
+
+    let addNewTask = () => {
+        // Prepare new task index
+        let maxIdx = getLatestTaskIdx();
         logger.info('maxIdx:', maxIdx);
         let newIdx = maxIdx ? maxIdx + 1 : 1;
         let newTime = 0;
@@ -28,7 +42,7 @@ const TaskModel = () => {
         let newDate = Date.now();
 
         let addTaskQuery =
-            `INSERT INTO ${taskTableName} (idx , date, time, description)
+            `INSERT INTO ${taskTableName} (idx, date, time, description)
              VALUES ('${newIdx}', '${newDate}', '${newTime}', '${newDescription}')`;
         let newTaskStmt = connection.prepare(addTaskQuery);
         let newTaskInfo = newTaskStmt.run();
@@ -158,6 +172,10 @@ const TaskModel = () => {
     }
 
     let startTaskById = (taskId) => {
+        if (!taskId) {
+            taskId = getLastTaskId();
+        }
+
         let newDate = Date.now();
         let startTaskQuery =
             `UPDATE ${taskTableName} SET start=${newDate} WHERE id=${taskId}`;
@@ -170,7 +188,7 @@ const TaskModel = () => {
             result = false;
         }
 
-        return result;
+        return result ? taskId : false;
     }
 
     let stopTaskById = (taskId) => {

@@ -49,7 +49,7 @@ const registerListeners = (mainWindow) => {
         logger.info('task start', taskId);
         let startResult = startTaskById(taskId);
         logger.info('task started', startResult);
-        mainWindow.webContents.send('task:started', !!startResult);
+        mainWindow.webContents.send('task:started', startResult);
     });
 
     ipcMain.on('task:stop', (event, taskId) => {
