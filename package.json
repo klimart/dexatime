@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "npm-run-all --print-label --parallel dev:*",
     "dev:start": "webpack-dev-server",
-    "dev:electron": "electron --trace-warnings  .",
+    "dev:electron": "export MODE=develop; electron --trace-warnings  .",
     "build": "webpack",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"

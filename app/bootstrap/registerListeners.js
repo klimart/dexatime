@@ -1,6 +1,6 @@
 const { ipcMain } = require('electron');
-const Task = require('./task');
-const logger = require('./logger');
+const Task = require('../model/task');
+const logger = require('../model/logger');
 
 const registerListeners = (mainWindow) => {
     const {
