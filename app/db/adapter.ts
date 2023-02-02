@@ -1,15 +1,14 @@
 //https://github.com/JoshuaWise/better-sqlite3/blob/master/docs/api.md#new-databasepath-options
-
-const Database = require('better-sqlite3');
-const Config = require('config');
-const InstallSchema = require('./install');
-const logger = require('../model/logger');
+import Database from 'better-sqlite3';
+import Config from 'config';
+import InstallSchema from './install';
+import logger from '../model/logger';
 
 class Adapter {
-    connection;
+    connection: Database.Database;
 
     constructor() {
-        this.initConnection();
+        this.connection = this.initConnection();
         this.checkInstallShema();
     }
 
@@ -22,8 +21,12 @@ class Adapter {
         try {
             logger.info('db connect')
             let dbName = Config.get('dbConfig.name');
-            this.connection = new Database(dbName, {verbose: console.log});
-        } catch (err) {
+            if (typeof dbName !== 'string') {
+                throw new Error('Missing database name');
+            }
+
+            return new Database(dbName, {verbose: console.log});
+        } catch (err: any) {
             logger.error(err.message);
             process.exit(1);
         }
@@ -41,4 +44,5 @@ class Adapter {
 }
 
 const AdapterInstance = new Adapter();
-module.exports = AdapterInstance;
+
+export default AdapterInstance;

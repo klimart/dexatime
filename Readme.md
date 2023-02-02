@@ -26,7 +26,7 @@ yarn run dev
 3. Adjust productName if needed in package.json
 4. Update build assets. Run ```npm run build```
 5. Generate AppImage distribution. Run ```npm run dist```
-6. Grep generated .AppImage file in /dist directory
+6. Grab generated .AppImage file in /dist directory
 
 ### Troubleshooting
 * Error:
