@@ -1,8 +1,8 @@
-const { ipcMain } = require('electron');
-const Task = require('../model/task');
-const logger = require('../model/logger');
+import { ipcMain, BrowserWindow } from 'electron';
+import Task from '../model/task';
+import logger from '../model/logger';
 
-const registerListeners = (mainWindow) => {
+const registerListeners = (mainWindow: BrowserWindow): void => {
     const {
         addNewTask,
         changeTasksOrder,
@@ -72,4 +72,4 @@ const registerListeners = (mainWindow) => {
     });
 };
 
-module.exports = registerListeners;
+export default registerListeners;

@@ -1,7 +1,7 @@
-const { BrowserWindow, Menu } = require('electron');
-const registerListeners = require('./registerListeners');
+import { BrowserWindow } from 'electron';
+import registerListeners from './registerListeners';
 
-const createWindow = () => {
+const createWindow = (): void => {
     const mainWindow = new BrowserWindow({
         width: 1000,
         height: 600,
@@ -18,11 +18,11 @@ const createWindow = () => {
         : `./src/index.html`;
     mainWindow.loadFile(rootFile);
 
-    const mainMenu = Menu.buildFromTemplate(menuTemplate);
+    // const mainMenu = Menu.buildFromTemplate(menuTemplate);
 
     registerListeners(mainWindow);
 }
 
-const menuTemplate = [];
+// const menuTemplate = [];
 
-module.exports = createWindow;
+export default createWindow;

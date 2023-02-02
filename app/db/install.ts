@@ -1,7 +1,8 @@
-const Config = require('config');
-const logger = require('../model/logger');
+import Database from 'better-sqlite3';
+import Config from 'config';
+import logger from '../model/logger';
 
-const InstallShema = (connection) => {
+const InstallShema = (connection: Database.Database) => {
     let taskTableName = Config.get('taskTable.name');
 
     let run = () => {
@@ -52,4 +53,4 @@ const InstallShema = (connection) => {
     return {run};
 };
 
-module.exports = InstallShema;
+export default InstallShema;

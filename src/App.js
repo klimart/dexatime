@@ -25,17 +25,17 @@ const App = () => {
                             <Switch>
                                 <Route
                                     path='/'
-                                    component={TaskTable}
+                                    component={props => <TaskTable {...props} />}
                                 />
                                 <Route
                                     exact
                                     path='/job'
-                                    component={TaskTable}
+                                    component={props => <TaskTable {...props} />}
                                 />
                                 <Route
                                     exact
                                     path='/client'
-                                    component={ClientForm}
+                                    component={props => <ClientForm {...props} />}
                                 />
                             </Switch>
                         </div>
