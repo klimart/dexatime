@@ -14,8 +14,8 @@ const createWindow = (): void => {
     })
 
     const rootFile = process.env.MODE === 'develop'
-        ? `./src/index-dev.html`
-        : `./src/index.html`;
+        ? `./frontend/src/index-dev.html`
+        : `./frontend/src/index.html`;
     mainWindow.loadFile(rootFile);
 
     // const mainMenu = Menu.buildFromTemplate(menuTemplate);

@@ -3,7 +3,7 @@ var path = require('path');
 module.exports = {
   mode: 'development',
   entry: [
-    './src/index.js', './src/scss/main.scss'
+    './src/index.tsx', './src/scss/main.scss'
   ],
   target: 'electron-renderer',
   output: {
@@ -13,6 +13,11 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+          test: /\.tsx?$/,
+          loader: 'ts-loader',
+          exclude: /node_modules/,
+      },
       {
           test: /\.js?$/,
           exclude: /node_modules/,
@@ -59,7 +64,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.tsx', '.ts', '.js', '.jsx'],
     alias: {
       '@Client': path.resolve(__dirname, 'src/')
     }
