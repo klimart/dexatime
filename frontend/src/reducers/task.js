@@ -127,7 +127,7 @@ export default (state = initialState, action) => {
             };
 
         case START_TASK:
-            if (!state.activeTaskId) {
+            if (!payload.id) {
                 return state;
             }
 

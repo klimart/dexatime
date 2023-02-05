@@ -99,17 +99,13 @@ export const selectLastTask = () => dispatch => {
 };
 
 export const startTask = (taskId) => dispatch => {
-    if (!taskId) {
-        return;
-    }
-
     ipcRenderer.send('task:start', taskId);
     ipcRenderer.on('task:started', (event, result) => {
         if (result) {
             dispatch({
                 type: START_TASK,
                 payload: {
-                    id: taskId
+                    id: result
                 }
             });
         }

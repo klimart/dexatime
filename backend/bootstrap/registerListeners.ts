@@ -1,8 +1,8 @@
-const { ipcMain } = require('electron');
-const Task = require('./task');
-const logger = require('./logger');
+import { ipcMain, BrowserWindow } from 'electron';
+import Task from '../model/task';
+import logger from '../model/logger';
 
-const registerListeners = (mainWindow) => {
+const registerListeners = (mainWindow: BrowserWindow): void => {
     const {
         addNewTask,
         changeTasksOrder,
@@ -49,7 +49,7 @@ const registerListeners = (mainWindow) => {
         logger.info('task start', taskId);
         let startResult = startTaskById(taskId);
         logger.info('task started', startResult);
-        mainWindow.webContents.send('task:started', !!startResult);
+        mainWindow.webContents.send('task:started', startResult);
     });
 
     ipcMain.on('task:stop', (event, taskId) => {
@@ -72,4 +72,4 @@ const registerListeners = (mainWindow) => {
     });
 };
 
-module.exports = registerListeners;
+export default registerListeners;

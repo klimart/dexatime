@@ -1,7 +1,34 @@
-const Adapter = require('../db/adapter');
-const Config = require('config');
-const logger = require('./logger');
-const escapeQuote = require('../utils/escapeQuote');
+import Adapter from '../db/adapter';
+import Config from 'config';
+import logger from './logger';
+import escapeQuote from '../utils/escapeQuote';
+
+type ChangeTasksOrdersProps = {
+    idx1: number,
+    idx2: number
+}
+
+type TaskData = {
+    idx: number,
+    description: string,
+    time?: number
+}
+
+type TaskDataUndefined = {
+    idx: undefined,
+    description: undefined,
+    time: undefined
+}
+
+type UpdateTaskProps = {
+    id: number,
+    params: TaskData
+}
+
+type TaskDataType = {
+    time?: number,
+    start?: number
+}
 
 const TaskModel = () => {
     let connection = Adapter.getConnection();
@@ -14,11 +41,25 @@ const TaskModel = () => {
     //     {id: 3, idx: 3, date: '1595538399385', time: 300, description: 'task 3 description', start: ''}
     // ];
 
-    let addNewTask = () => {
-        // Prepare new task index
+    const getLatestTaskIdx = () => {
         let maxIdxQuery = `SELECT MAX(idx) FROM ${taskTableName}`;
         let maxIdxStmt = connection.prepare(maxIdxQuery);
-        let maxIdx = maxIdxStmt.pluck().get();
+
+        return maxIdxStmt.pluck().get();
+    };
+
+    const getLastTaskId = () => {
+        let maxIdx = getLatestTaskIdx();
+        let getTaskQuery = `SELECT * FROM ${taskTableName} WHERE idx=${maxIdx}`;
+        let getTaskStmt = connection.prepare(getTaskQuery);
+        let task = getTaskStmt.get();
+
+        return task.id;
+    };
+
+    let addNewTask = () => {
+        // Prepare new task index
+        let maxIdx = getLatestTaskIdx();
         logger.info('maxIdx:', maxIdx);
         let newIdx = maxIdx ? maxIdx + 1 : 1;
         let newTime = 0;
@@ -28,7 +69,7 @@ const TaskModel = () => {
         let newDate = Date.now();
 
         let addTaskQuery =
-            `INSERT INTO ${taskTableName} (idx , date, time, description)
+            `INSERT INTO ${taskTableName} (idx, date, time, description)
              VALUES ('${newIdx}', '${newDate}', '${newTime}', '${newDescription}')`;
         let newTaskStmt = connection.prepare(addTaskQuery);
         let newTaskInfo = newTaskStmt.run();
@@ -41,15 +82,16 @@ const TaskModel = () => {
         let newTaskData;
         try {
             newTaskData = getNewTaskStmt.get();
-        } catch (error) {
+        } catch (error: any) {
             newTaskData = {};
         }
 
         return newTaskData;
     }
 
+
     // Exchange tasks orders
-    let changeTasksOrder = (params) => {
+    let changeTasksOrder = (params: ChangeTasksOrdersProps) => {
         let idx1 = params.idx1;
         let idx2 = params.idx2;
 
@@ -68,7 +110,7 @@ const TaskModel = () => {
 
             task1Id = task1.id;
             task2Id = task2.id;
-        } catch (error) {
+        } catch (error: any) {
             logger.error('Get task by id error', error.message);
 
             return false;
@@ -88,7 +130,7 @@ const TaskModel = () => {
         try {
             updateTask1Stmt.run();
             updateTask2Stmt.run();
-        } catch (error) {
+        } catch (error: any) {
             logger.error('Update task index error', error.message);
 
             updateResult = false;
@@ -97,14 +139,14 @@ const TaskModel = () => {
         return updateResult;
     }
 
-    let deleteTask = (taskId) => {
+    let deleteTask = (taskId: number) => {
         let deleteTasksQuery = `DELETE FROM ${taskTableName} WHERE id=${taskId}`;
         let deleteTasksStmt = connection.prepare(deleteTasksQuery);
 
         let result;
         try {
             result = deleteTasksStmt.run();
-        } catch (error) {
+        } catch (error: any) {
             result = false;
         }
 
@@ -118,7 +160,7 @@ const TaskModel = () => {
         let taskList;
         try {
             taskList = getTasksStmt.all();
-        } catch (error) {
+        } catch (error: any) {
             taskList = [];
         }
 
@@ -132,7 +174,7 @@ const TaskModel = () => {
         let taskCount;
         try {
             taskCount = getTasksStmt.get().count;
-        } catch (error) {
+        } catch (error: any) {
             logger.error('Get tasks count list error: ', error.message);
             taskCount = null;
         }
@@ -140,24 +182,28 @@ const TaskModel = () => {
         return taskCount;
     }
 
-    const getPartTasksList = (offset = 0, limit = 30) => {
+    const getPartTasksList = (offset: number = 0, limit: number = 30) => {
         let getTasksQuery = `
             SELECT * FROM ${taskTableName}
             ORDER BY idx DESC
             LIMIT ${offset}, ${limit}`;
         let getTasksStmt = connection.prepare(getTasksQuery);
 
-        let taskList;
+        let taskList: Array<TaskData>;
         try {
             taskList = getTasksStmt.all();
-        } catch (error) {
+        } catch (error: any) {
             taskList = [];
         }
 
         return taskList;
     }
 
-    let startTaskById = (taskId) => {
+    let startTaskById = (taskId: number) => {
+        if (!taskId) {
+            taskId = getLastTaskId();
+        }
+
         let newDate = Date.now();
         let startTaskQuery =
             `UPDATE ${taskTableName} SET start=${newDate} WHERE id=${taskId}`;
@@ -166,30 +212,29 @@ const TaskModel = () => {
         let result;
         try {
             result = startTaskStmt.run();
-        } catch (error) {
+        } catch (error: any) {
             result = false;
         }
 
-        return result;
+        return result ? taskId : false;
     }
 
-    let stopTaskById = (taskId) => {
-        taskId = parseInt(taskId);
+    let stopTaskById = (taskId: number) => {
         let getStopTaskQuery = `SELECT * FROM ${taskTableName} WHERE rowid=${taskId}`;
         let getStopTaskStmt = connection.prepare(getStopTaskQuery);
 
-        let stopTaskTime;
+        let stopTaskTime: number;
         try {
             let stopTaskData = getStopTaskStmt.get();
             stopTaskTime = parseInt(stopTaskData.time);
             let startSessionStart = parseInt(stopTaskData.start);
 
             if (startSessionStart) {
-                let currentSessionTime = (parseInt(Date.now()) - startSessionStart) / 1000;
+                let currentSessionTime = Math.round(Date.now() - startSessionStart) / 1000;
                 currentSessionTime = Math.round(currentSessionTime);
                 stopTaskTime = stopTaskTime + currentSessionTime;
             }
-        } catch (error) {
+        } catch (error: any) {
             logger.error('Stop task query error', error.message)
             stopTaskTime = 0;
         }
@@ -200,51 +245,51 @@ const TaskModel = () => {
              WHERE id=${taskId}`;
         let stopTaskStmt = connection.prepare(stopTaskQuery);
 
-        let result;
+        let result: Boolean | Object;
         try {
             result = stopTaskStmt.run();
-        } catch (error) {
+        } catch (error: any) {
             result = false;
         }
 
         return result;
     }
 
-    let updateTask = (data) => {
+    let updateTask = (data: UpdateTaskProps) => {
         let taskId = data.id;
         let taskParams = data.params;
 
         let getTaskQuery = `SELECT * FROM ${taskTableName} WHERE rowid=${taskId}`;
         let getTaskStmt = connection.prepare(getTaskQuery);
 
-        let savedTaskData;
+        let savedTaskData: TaskData | TaskDataUndefined;
         try {
             savedTaskData = getTaskStmt.get();
-        } catch (error) {
-            savedTaskData = {};
+        } catch (error: any) {
+            savedTaskData = {idx: undefined, description: undefined, time: undefined};
         }
 
         let hasChanges = taskParams.idx && (taskParams.idx !== savedTaskData.idx)
             || Boolean(taskParams.description) && (taskParams.description !== savedTaskData.description)
-            || Boolean(taskParams.time) && (taskParams.time !== savedTaskData.time);
+            || Number.isInteger(taskParams.time) && taskParams.time !== savedTaskData.time;
 
         if (hasChanges) {
             let taskIdx = taskParams.idx || savedTaskData.idx;
             let taskDescription = Boolean(taskParams.description) ? taskParams.description : savedTaskData.description;
-            taskDescription = escapeQuote(taskDescription);
-            let updateTaskTime = Boolean(taskParams.time) ? taskParams.time : savedTaskData.time;
+            taskDescription = escapeQuote(taskDescription || '');
+            let updateTaskTime = Number.isInteger(taskParams.time) ? taskParams.time : savedTaskData.time;
 
             let updateTaskQuery =
                 `UPDATE ${taskTableName}
                     SET idx=${taskIdx}, description='${taskDescription}', time=${updateTaskTime}
-                WHERE id=${taskId}`;
+                  WHERE id=${taskId}`;
             logger.info('Update task query', updateTaskQuery);
             let updateTaskStmt = connection.prepare(updateTaskQuery);
 
-            let updateResult;
+            let updateResult: Boolean | Object;
             try {
                 updateResult = updateTaskStmt.run();
-            } catch (error) {
+            } catch (error: any) {
                 logger.error('Update task error')
                 updateResult = false;
             }
@@ -255,17 +300,17 @@ const TaskModel = () => {
         let getUpdatedTaskQuery = `SELECT * FROM ${taskTableName} WHERE rowid=${taskId}`;
         let getUpdatedTaskStmt = connection.prepare(getUpdatedTaskQuery);
 
-        let updatedTaskData;
+        let updatedTaskData: TaskDataType;
         try {
             updatedTaskData = getUpdatedTaskStmt.get();
-            let updatedTaskTime = updatedTaskData.time;
+            let updatedTaskTime = updatedTaskData.time || 0;
             let startTime = updatedTaskData.start;
             if (startTime) {
-                let currentSessionTime = parseInt((Date.now() - startTime) / 1000);
+                let currentSessionTime = Math.round((Date.now() - startTime) / 1000);
                 currentSessionTime = Math.round(currentSessionTime);
                 updatedTaskData.time = updatedTaskTime + currentSessionTime;
             }
-        } catch (error) {
+        } catch (error: any) {
             updatedTaskData = {};
         }
 
@@ -286,4 +331,4 @@ const TaskModel = () => {
     };
 };
 
-module.exports = TaskModel;
+export default TaskModel;
