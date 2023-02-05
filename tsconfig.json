@@ -5,9 +5,9 @@
         "strict": true,
         "esModuleInterop": true,
         "outDir": "./generated",
-        "rootDir": "./app"
+        "rootDir": "./backend"
     },
-    "exclude": ["dist"],
+    "exclude": ["dist", "frontend"],
     "watchOptions": {
         "excludeDirectories": ["**/node_modules", "dist"]
     }
