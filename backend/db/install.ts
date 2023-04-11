@@ -1,56 +1,47 @@
 import Database from 'better-sqlite3';
-import Config from 'config';
 import logger from '../model/logger';
+import { collectInstallScripts } from './collectInstallScripts';
+import { getDbVersion, setDbVersion } from '../model/dbVersion';
 
-const InstallShema = (connection: Database.Database) => {
-    let taskTableName = Config.get('taskTable.name');
+const InstallSchema = (connection: Database.Database) => {
+    const dbVersion = getDbVersion(connection);
+    logger.info(`Db Version:`, dbVersion);
+
+    let installedCount = 0;
+    let installedVersion = dbVersion;
 
     let run = () => {
-        installTaskTable();
-        addStartColumn();
-    }
+        const scripts = collectInstallScripts(connection, dbVersion);
 
-    let installTaskTable = () => {
-        let query = `SELECT name FROM sqlite_master WHERE type='table' AND name=?`;
-        let stmt = connection.prepare(query);
-        let tableExists = stmt.get(taskTableName);
-
-        if (!tableExists) {
-            // Create Task table
-            let createTableQuery =
-            `CREATE TABLE ${taskTableName} (
-                id INTEGER PRIMARY KEY,
-                idx INTEGER,
-                date TEXT,
-                time INTEGER,
-                description TEXT
-            )`;
-
-            let statement = connection.prepare(createTableQuery);
-            statement.run();
-        }
-    }
-
-    let addStartColumn = () => {
-        let query = `PRAGMA table_info('${taskTableName}')`;
-        let stmt = connection.prepare(query);
-        let startColumn = 'start';
-
-        for (let row of stmt.iterate()) {
-            if (row.name === startColumn) {
-                logger.info('Start column exists');
-
-                return;
+        const setUpDbVersion = (version: number) => {
+            if (version > dbVersion) {
+                setDbVersion(connection, version);
+                logger.info(`New DB Version: ${version}`);
             }
-        }
+        };
 
-        let addColumnQuery = `ALTER TABLE ${taskTableName} ADD COLUMN ${startColumn} INTEGER`;
-        let statement = connection.prepare(addColumnQuery);
-        statement.run();
-        logger.info('Created start column');
-    }
+        scripts.map((installScript) => {
+            try {
+                logger.info(`Run script: `, installScript);
+                logger.info(`Run script: `, installScript.getName());
+                installScript.execute();
+                installedVersion = installScript.getVersion();
+                installedCount++;
+            } catch (err) {
+                err instanceof Error
+                    ? logger.error(err.message)
+                    : logger.error('Error script execute');
 
-    return {run};
+                setUpDbVersion(installedVersion);
+                throw new Error('Install script error');
+            }
+        });
+
+        setUpDbVersion(installedVersion);
+        logger.info(`Installed ${installedCount} scripts`);
+    };
+
+    return { run };
 };
 
-export default InstallShema;
+export default InstallSchema;
