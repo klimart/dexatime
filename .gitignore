@@ -2,6 +2,7 @@ node_modules
 yarn-error.log
 dist
 .idea
+.vscode
 build
 log.txt
 tracker1
